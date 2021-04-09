@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Chat Me</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="or">Or</string>
+    <string name="create_a_new_account">Create a new account</string>
+    <string name="login_using_your_phone">Login using your phone</string>
+    <string name="not_having_any_account">Not having any account?</string>
 </resources>
