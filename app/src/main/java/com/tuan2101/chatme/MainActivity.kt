@@ -17,7 +17,7 @@ import com.tuan2101.chatme.viewModel.User
 class MainActivity : AppCompatActivity() {
 
     lateinit var firebaseAuth: FirebaseAuth
-    var currentUser: FirebaseUser? = null
+    private var currentUser: FirebaseUser? = null
     lateinit var binding: ActivityMainBinding
     lateinit var referenceUser: DatabaseReference
 
@@ -35,30 +35,33 @@ class MainActivity : AppCompatActivity() {
         binding.mainViewPager.adapter = TabSwitcher(supportFragmentManager)
         binding.tabSwitcher.setupWithViewPager(binding.mainViewPager)
 
-        referenceUser!!.child("User").child(currentUser!!.uid).addValueEventListener(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val user: User? = snapshot.getValue(User::class.java)
+        if (currentUser?.uid != null) {
 
-                    binding.userName.text = user!!.getName()
+            referenceUser!!.child("User").child(currentUser!!.uid).addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val user: User? = snapshot.getValue(User::class.java)
 
-                    println("==================================================")
-                    println(" day la search  ${user.getSearch()}")
-                    println("==================================================")
-
-                    Picasso.get()
-                        .load(user.getAvatar())
-                        .fit()
-                        .into(binding.imageProfile)
+                        binding.userName.text = user!!.getName()
+                        Picasso.get()
+                            .load(user.getAvatar())
+                            .fit()
+                            .into(binding.imageProfile)
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
 
-        })
+            })
+        }
+
+        binding.search.setOnClickListener {
+            sendToSearchActivity()
+        }
+
     }
 
     override fun onStart() {
@@ -74,6 +77,13 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finish()
+    }
+
+    private fun sendToSearchActivity() {
+        val intent = Intent(this@MainActivity, SearchActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+//        finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -94,6 +104,5 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
-
 
 }
