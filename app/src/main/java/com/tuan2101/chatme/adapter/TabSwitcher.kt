@@ -19,7 +19,7 @@ class TabSwitcher(fragmentManager: FragmentManager): FragmentPagerAdapter(fragme
                 return chatFragment
             }
             1-> {
-                var groupChatFragment  =GroupChatFragment()
+                var groupChatFragment  = GroupChatFragment()
                 return groupChatFragment
             }
             2-> {

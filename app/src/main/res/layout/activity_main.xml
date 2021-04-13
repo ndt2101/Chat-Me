@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".MainActivity">
@@ -14,15 +15,43 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-
-        <include
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/main_toolbar"
-            layout="@layout/app_bar" />
+            android:background="@drawable/app_bar_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image_profile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_profile"
+                android:tint="@color/white">
+
+            </de.hdodenhof.circleimageview.CircleImageView>
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:textSize="18sp"
+                android:layout_marginLeft="26dp"
+                android:textStyle="bold"
+                android:textColor="@color/white">
+
+            </TextView>
+
+        </androidx.appcompat.widget.Toolbar>
+
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_switcher"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_bar_style"/>
     </com.google.android.material.appbar.AppBarLayout>
     
     <androidx.viewpager.widget.ViewPager
@@ -32,3 +61,8 @@
         android:layout_below="@id/app_bar_layout"/>
 
 </RelativeLayout>
+</layout>
+
+<!--<include-->
+<!--android:id="@+id/main_toolbar"-->
+<!--layout="@layout/app_bar" />-->

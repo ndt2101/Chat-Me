@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/app_bar_toolbar"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/app_bar_style"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image_profile"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_profile"
+        android:tint="@color/white">
+
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name"
+        android:textSize="18sp"
+        android:layout_marginLeft="26dp"
+        android:textStyle="bold"
+        android:textColor="@color/white">
+
+    </TextView>
 
 </androidx.appcompat.widget.Toolbar>

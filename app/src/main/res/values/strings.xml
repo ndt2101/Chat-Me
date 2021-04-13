@@ -10,4 +10,8 @@
     <string name="create_a_new_account">Create a new account</string>
     <string name="login_using_your_phone">Login using your phone</string>
     <string name="not_having_any_account">Not having any account?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="error_email">Email address must be of the form example@gmail.com</string>
+    <string name="user_name">User name</string>
 </resources>
