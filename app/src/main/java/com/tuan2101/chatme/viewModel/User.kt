@@ -1,10 +1,25 @@
 package com.tuan2101.chatme.viewModel
 
-class User(private var name: String, private var uid: String, private var status: String, private var avatar: String, private var search: String) {
+class User {
 
-    fun setUid(uid: String) {
+    private var name: String = ""
+    private var uid: String = ""
+    private var status: String = ""
+    private var avatar: String = ""
+    private var search: String = ""
+
+    constructor()
+
+    constructor(name: String, uid: String, status: String, avatar: String, search: String) {
+        this.name = name
         this.uid = uid
+        this.status = status
+        this.avatar = avatar
+        this.search = search
+
+
     }
+
 
     fun getUid(): String {
         return this.uid
@@ -39,6 +54,10 @@ class User(private var name: String, private var uid: String, private var status
     }
 
     fun getSearch(): String {
+
+        println("==================================================")
+        println(" day la avatar  ${getAvatar()}")
+        println("==================================================")
         return this.search
     }
 }

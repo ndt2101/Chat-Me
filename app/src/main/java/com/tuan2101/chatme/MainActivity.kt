@@ -35,22 +35,30 @@ class MainActivity : AppCompatActivity() {
         binding.mainViewPager.adapter = TabSwitcher(supportFragmentManager)
         binding.tabSwitcher.setupWithViewPager(binding.mainViewPager)
 
-//        referenceUser!!.child("User").child(currentUser!!.uid).addValueEventListener(object: ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                if (snapshot.exists()) {
-//                    val user: User? = snapshot.getValue(User::class.java)
-//
-//                    binding.userName.text = user?.getName()
-//
-////                    Picasso.get().load(user?.getAvatar()).into(binding.imageProfile)
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                TODO("Not yet implemented")
-//            }
-//
-//        })
+        referenceUser!!.child("User").child(currentUser!!.uid).addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val user: User? = snapshot.getValue(User::class.java)
+
+                    binding.userName.text = user!!.getName()
+
+                    println("==================================================")
+                    println(" day la search  ${user.getSearch()}")
+                    println("==================================================")
+
+                    Picasso.get()
+                        .load(user.getAvatar())
+                        .fit()
+                        .into(binding.imageProfile)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     override fun onStart() {
