@@ -6,15 +6,32 @@ class User {
     private var uid: String = ""
     private var status: String = ""
     private var avatar: String = ""
+    private var coverImage: String = ""
+    private var introduceYourself: String = ""
+    private var work: String = ""
+    private var homeTown: String = ""
     private var search: String = ""
 
     constructor()
 
-    constructor(name: String, uid: String, status: String, avatar: String, search: String) {
+    constructor(name: String,
+                uid: String,
+                status: String,
+                avatar: String,
+                coverImage: String,
+                introduceYourself: String,
+                work: String,
+                homeTown: String,
+                search: String)
+    {
         this.name = name
         this.uid = uid
         this.status = status
         this.avatar = avatar
+        this.coverImage = coverImage
+        this.introduceYourself = introduceYourself
+        this.work = work
+        this.homeTown = homeTown
         this.search = search
 
 
@@ -55,9 +72,38 @@ class User {
 
     fun getSearch(): String {
 
-        println("==================================================")
-        println(" day la avatar  ${getAvatar()}")
-        println("==================================================")
         return this.search
+    }
+
+    fun setCoverImage(coverImage: String) {
+        this.coverImage = coverImage
+    }
+
+    fun getCoverImage(): String {
+        return this.coverImage
+    }
+
+    fun setIntroduceYourself(introduceYourself: String) {
+        this.introduceYourself = introduceYourself
+    }
+
+    fun getIntroduceYourself(): String {
+        return this.introduceYourself
+    }
+
+    fun setWork(work: String) {
+        this.work = work
+    }
+
+    fun getWork(): String {
+        return this.work
+    }
+
+    fun setHomeTown(homeTown: String) {
+        this.homeTown = homeTown
+    }
+
+    fun getHomeTown(): String {
+        return this.homeTown
     }
 }

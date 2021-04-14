@@ -61,6 +61,42 @@
             android:inputType="textPassword"
             android:padding="10dp" />
 
+        <EditText
+            android:id="@+id/introduce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_style"
+            android:drawableStart="@drawable/ic_baseline_auto_story"
+            android:drawablePadding="5dp"
+            android:drawableTint="@color/violet"
+            android:hint="@string/introduce_yourself"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/work"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_style"
+            android:drawableStart="@drawable/ic_baseline_work"
+            android:drawablePadding="5dp"
+            android:drawableTint="@color/violet"
+            android:hint="@string/work"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/home_town"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_style"
+            android:drawableStart="@drawable/ic_baseline_home"
+            android:drawablePadding="5dp"
+            android:drawableTint="@color/violet"
+            android:hint="@string/home_town"
+            android:padding="10dp" />
+
         <Button
             android:id="@+id/register_button"
             android:layout_width="match_parent"

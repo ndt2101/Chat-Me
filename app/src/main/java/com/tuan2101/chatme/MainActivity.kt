@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                     if (snapshot.exists()) {
                         val user: User? = snapshot.getValue(User::class.java)
 
-                        binding.userName.text = user!!.getName()
+                        binding.userName.text = user!!.getName().toString()
                         Picasso.get()
                             .load(user.getAvatar())
                             .fit()

@@ -92,7 +92,11 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                 detailsUser["name"] = binding.registerUserName.text.toString()
                                 detailsUser["iud"] = currentUId
                                 detailsUser["status"] = "offline"
-                                detailsUser["avatar"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/2020-04-19.png?alt=media&token=74a156c4-fbbe-43c6-80f8-e2f8cfd0ec5d"
+                                detailsUser["avatar"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/kha_banh.jpg?alt=media&token=cb80b64a-8ccb-4076-92eb-6ed04f5f606f"
+                                detailsUser["coverImage"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/anh_8734430258343706624.jpg?alt=media&token=6f28ee1e-338f-4bf0-85cb-48cbdbe90124"
+                                detailsUser["introduceYourself"] = binding.introduce.text.toString()
+                                detailsUser["work"] = binding.work.text.toString()
+                                detailsUser["homeTown"] = binding.homeTown.text.toString()
                                 detailsUser["search"] = binding.registerUserName.text.toString().toLowerCase()
 
                                 databaseReference.child("User").child(currentUId).updateChildren(detailsUser)

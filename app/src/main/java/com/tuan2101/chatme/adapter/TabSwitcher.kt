@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.tuan2101.chatme.fragment.ChatFragment
-import com.tuan2101.chatme.fragment.ContactFragment
+import com.tuan2101.chatme.fragment.ProfileFragment
 import com.tuan2101.chatme.fragment.GroupChatFragment
 
 class TabSwitcher(fragmentManager: FragmentManager): FragmentPagerAdapter(fragmentManager) {
@@ -23,7 +23,7 @@ class TabSwitcher(fragmentManager: FragmentManager): FragmentPagerAdapter(fragme
                 return groupChatFragment
             }
             2-> {
-                var contactFragment = ContactFragment()
+                var contactFragment = ProfileFragment()
                 return contactFragment
             }
 
@@ -36,13 +36,13 @@ class TabSwitcher(fragmentManager: FragmentManager): FragmentPagerAdapter(fragme
     override fun getPageTitle(position: Int): CharSequence? {
         when(position) {
             0-> {
-                return "Chat Fragment"
+                return "Chat"
             }
             1-> {
-                return "Group Chat Fragment"
+                return "Group Chat"
             }
             2-> {
-                return "Contact Fragment"
+                return "Profile"
             }
 
             else -> {
