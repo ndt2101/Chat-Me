@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:id="@+id/chat_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ChatLogActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/app_bar_style"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avt"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_profile"
+                    android:tint="@color/white">
+
+                </de.hdodenhof.circleimageview.CircleImageView>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="26dp"
+                    android:text="User Name"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    >
+                </TextView>
+
+                <ImageView
+                    android:id="@+id/voice_call"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/call_icon"
+                    app:tint="@color/white"
+                    android:layout_marginLeft="100dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/video_call"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/video_call"
+                    app:tint="@color/white"
+                    android:layout_marginLeft="20dp"
+                    />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_users_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/chat"
+            android:layout_below="@id/app_bar_layout"/>
+
+        <EditText
+            android:id="@+id/chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/edittext_style"
+            android:hint="@string/chat_here"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/icon_send"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/icon_smile"
+            android:layout_below="@id/list_users_chat"
+            android:layout_toLeftOf="@id/chat"
+            android:layout_marginRight="-35dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <ImageView
+            android:id="@+id/send_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_action_name"
+            app:tint="@color/violet"
+            android:layout_below="@id/list_users_chat"
+            android:layout_toRightOf="@id/chat"
+            android:layout_marginLeft="-30dp"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/image_send"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_attach_file"
+            app:tint="@color/violet"
+            android:layout_below="@id/list_users_chat"
+            android:layout_toRightOf="@id/chat"
+            android:layout_marginLeft="-35dp"
+            />
+    </RelativeLayout>
+</layout>
+
+
+

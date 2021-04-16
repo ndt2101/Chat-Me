@@ -1,16 +1,19 @@
 package com.tuan2101.chatme
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.tuan2101.chatme.adapter.RecyclerItemTouchHelper
 import com.tuan2101.chatme.adapter.UserAdapter
 import com.tuan2101.chatme.databinding.ActivityMainBinding
 import com.tuan2101.chatme.databinding.ActivitySearchBinding
@@ -47,6 +50,9 @@ class SearchActivity : AppCompatActivity() {
              }
 
          })
+
+
+
     }
 
     private fun retrieveAllUser() {
@@ -66,6 +72,8 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     userAdapter = UserAdapter(applicationContext, users, false) // khong chac context
+                    val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(userAdapter, this@SearchActivity))
+                    itemTouchHelper.attachToRecyclerView(binding.searchList)
                     binding.searchList.adapter = userAdapter
                 }
             }
@@ -96,6 +104,10 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
                 userAdapter = UserAdapter(applicationContext, users, false) // khong chac context
+
+                val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(userAdapter, this@SearchActivity))
+                itemTouchHelper.attachToRecyclerView(binding.searchList)
+
                 binding.searchList.adapter = userAdapter
             }
 
@@ -106,4 +118,36 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
+    fun navigateToChatActivity(user: User) {
+        val intent = Intent(this@SearchActivity, ChatLogActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        intent.putExtra("user", user)
+
+        println("======================================")
+        println(user.getName())
+        println(user.getAvatar())
+        println(user.getCoverImage())
+        println(user.getHomeTown())
+        println("======================================")
+        startActivity(intent)
+        finish()
+    }
+
+    fun navigateToInfoActivity(user: User) {
+        val intent = Intent(this@SearchActivity, InfoActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        intent.putExtra("user", user)
+
+
+        println("======================================")
+        println(user.getName())
+        println(user.getAvatar())
+        println(user.getCoverImage())
+        println(user.getHomeTown())
+        println("======================================")
+        startActivity(intent)
+        finish()
+    }
 }

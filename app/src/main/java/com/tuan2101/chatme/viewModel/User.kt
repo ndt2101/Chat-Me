@@ -1,6 +1,9 @@
 package com.tuan2101.chatme.viewModel
 
-class User {
+import java.io.Serializable
+
+
+class User() : Serializable {
 
     private var name: String = ""
     private var uid: String = ""
@@ -12,7 +15,6 @@ class User {
     private var homeTown: String = ""
     private var search: String = ""
 
-    constructor()
 
     constructor(name: String,
                 uid: String,
@@ -22,8 +24,7 @@ class User {
                 introduceYourself: String,
                 work: String,
                 homeTown: String,
-                search: String)
-    {
+                search: String) : this() {
         this.name = name
         this.uid = uid
         this.status = status

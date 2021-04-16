@@ -37,10 +37,6 @@ class UserAdapter(
 
     class ViewHolder(val binding: SearchViewHolderBinding ) : RecyclerView.ViewHolder(binding.root) {
 
-
-
-
-
         companion object {
             fun from(parent: ViewGroup) : ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
