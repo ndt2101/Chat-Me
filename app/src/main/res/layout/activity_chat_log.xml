@@ -67,11 +67,12 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_users_chat"
+            android:id="@+id/list_messenger"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/chat"
-            android:layout_below="@id/app_bar_layout"/>
+            android:layout_below="@id/app_bar_layout"
+            />
 
         <EditText
             android:id="@+id/chat"
@@ -89,7 +90,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/icon_smile"
-            android:layout_below="@id/list_users_chat"
+            android:layout_below="@id/list_messenger"
             android:layout_toLeftOf="@id/chat"
             android:layout_marginRight="-35dp"
             android:layout_marginTop="5dp"
@@ -101,7 +102,7 @@
             android:layout_height="50dp"
             android:src="@drawable/ic_action_name"
             app:tint="@color/violet"
-            android:layout_below="@id/list_users_chat"
+            android:layout_below="@id/list_messenger"
             android:layout_toRightOf="@id/chat"
             android:layout_marginLeft="-30dp"
             android:visibility="gone"
@@ -113,7 +114,7 @@
             android:layout_height="50dp"
             android:src="@drawable/ic_attach_file"
             app:tint="@color/violet"
-            android:layout_below="@id/list_users_chat"
+            android:layout_below="@id/list_messenger"
             android:layout_toRightOf="@id/chat"
             android:layout_marginLeft="-35dp"
             />
