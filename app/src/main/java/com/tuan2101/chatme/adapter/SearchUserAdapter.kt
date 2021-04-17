@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
 import com.tuan2101.chatme.databinding.SearchViewHolderBinding
+import com.tuan2101.chatme.viewModel.ChatMessenger
 
 import com.tuan2101.chatme.viewModel.User
 
-class UserAdapter(
+class SearchUserAdapter(
     val context: Context,
     val users: List<User>,
-    val isChatCheck: Boolean
-) : RecyclerView.Adapter<UserAdapter.ViewHolder?>() {
+    val isChatCheck: Boolean,
+) : RecyclerView.Adapter<SearchUserAdapter.ViewHolder?>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)

@@ -14,15 +14,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.tuan2101.chatme.adapter.RecyclerItemTouchHelper
-import com.tuan2101.chatme.adapter.UserAdapter
-import com.tuan2101.chatme.databinding.ActivityMainBinding
+import com.tuan2101.chatme.adapter.SearchUserAdapter
 import com.tuan2101.chatme.databinding.ActivitySearchBinding
 import com.tuan2101.chatme.viewModel.User
 import java.util.ArrayList
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var userAdapter: UserAdapter
+    private lateinit var searchUserAdapter: SearchUserAdapter
     lateinit var binding: ActivitySearchBinding
 
     lateinit var users: List<User>
@@ -71,10 +70,10 @@ class SearchActivity : AppCompatActivity() {
                         }
                     }
 
-                    userAdapter = UserAdapter(applicationContext, users, false) // khong chac context
-                    val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(userAdapter, this@SearchActivity))
+                    searchUserAdapter = SearchUserAdapter(applicationContext, users, false) // khong chac context
+                    val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(searchUserAdapter, this@SearchActivity))
                     itemTouchHelper.attachToRecyclerView(binding.searchList)
-                    binding.searchList.adapter = userAdapter
+                    binding.searchList.adapter = searchUserAdapter
                 }
             }
 
@@ -103,12 +102,12 @@ class SearchActivity : AppCompatActivity() {
                         (users as ArrayList<User>).add(user)
                     }
                 }
-                userAdapter = UserAdapter(applicationContext, users, false) // khong chac context
+                searchUserAdapter = SearchUserAdapter(applicationContext, users, false) // khong chac context
 
-                val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(userAdapter, this@SearchActivity))
+                val itemTouchHelper = ItemTouchHelper(RecyclerItemTouchHelper(searchUserAdapter, this@SearchActivity))
                 itemTouchHelper.attachToRecyclerView(binding.searchList)
 
-                binding.searchList.adapter = userAdapter
+                binding.searchList.adapter = searchUserAdapter
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -129,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
         println(user.getAvatar())
         println(user.getCoverImage())
         println(user.getHomeTown())
+        println("day la id ${user.getUid()}")
         println("======================================")
         startActivity(intent)
         finish()

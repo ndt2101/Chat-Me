@@ -6,6 +6,7 @@
         android:id="@+id/chat_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:windowSoftInputMode="adjustResize"
         tools:context=".ChatLogActivity">
 
         <com.google.android.material.appbar.AppBarLayout

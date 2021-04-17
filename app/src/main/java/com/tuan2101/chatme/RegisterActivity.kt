@@ -48,6 +48,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    // :))))))
     fun navigateToMainActivity() {
         val intent = Intent(this@RegisterActivity, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -90,7 +91,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
                                 val detailsUser = HashMap<String, Any>()
                                 detailsUser["name"] = binding.registerUserName.text.toString()
-                                detailsUser["iud"] = currentUId
+                                detailsUser["uid"] = currentUId
                                 detailsUser["status"] = "offline"
                                 detailsUser["avatar"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/kha_banh.jpg?alt=media&token=cb80b64a-8ccb-4076-92eb-6ed04f5f606f"
                                 detailsUser["coverImage"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/anh_8734430258343706624.jpg?alt=media&token=6f28ee1e-338f-4bf0-85cb-48cbdbe90124"
