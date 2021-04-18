@@ -203,7 +203,13 @@ class ChatLogActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
                 }
+            val latestMessengerReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$fromId/$toId")
+            latestMessengerReference.setValue(chatMessenger)
+
+            val latestMessengerToReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$toId/$fromId")
+            latestMessengerToReference.setValue(chatMessenger)
         }
+
 
 
     }
