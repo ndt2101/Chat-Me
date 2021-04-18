@@ -67,6 +67,7 @@ class ChatLogActivity : AppCompatActivity() {
 
         binding.listMessenger.adapter = adapter
 
+
         binding.chat.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 

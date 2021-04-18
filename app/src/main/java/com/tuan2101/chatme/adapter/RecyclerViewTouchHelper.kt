@@ -24,7 +24,6 @@ class RecyclerItemTouchHelper(private val adapterSearch: SearchUserAdapter, val 
 
         } else {
             activity.navigateToInfoActivity(adapterSearch.users[position])
-
         }
     }
 

@@ -122,14 +122,14 @@ class SearchActivity : AppCompatActivity() {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         intent.putExtra("user", user)
-
-        println("======================================")
-        println(user.getName())
-        println(user.getAvatar())
-        println(user.getCoverImage())
-        println(user.getHomeTown())
-        println("day la id ${user.getUid()}")
-        println("======================================")
+//
+//        println("======================================")
+//        println(user.getName())
+//        println(user.getAvatar())
+//        println(user.getCoverImage())
+//        println(user.getHomeTown())
+//        println("day la id ${user.getUid()}")
+//        println("======================================")
         startActivity(intent)
         finish()
     }
@@ -139,14 +139,14 @@ class SearchActivity : AppCompatActivity() {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         intent.putExtra("user", user)
-
-
-        println("======================================")
-        println(user.getName())
-        println(user.getAvatar())
-        println(user.getCoverImage())
-        println(user.getHomeTown())
-        println("======================================")
+//
+//
+//        println("======================================")
+//        println(user.getName())
+//        println(user.getAvatar())
+//        println(user.getCoverImage())
+//        println(user.getHomeTown())
+//        println("======================================")
         startActivity(intent)
         finish()
     }
