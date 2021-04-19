@@ -1,19 +1,22 @@
 package com.tuan2101.chatme
 
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY
-import android.view.inputmethod.InputMethodManager.SHOW_FORCED
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
 import com.tuan2101.chatme.viewModel.ChatMessenger
@@ -21,20 +24,33 @@ import com.tuan2101.chatme.viewModel.User
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_from_row.view.avt
 import kotlinx.android.synthetic.main.chat_from_row.view.messenger
-import kotlinx.android.synthetic.main.chat_to_row.view.*
+import com.google.android.gms.tasks.Continuation
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.image_chat_from_row.view.*
+import kotlinx.android.synthetic.main.image_chat_from_row.view.image_messenger
+import kotlinx.android.synthetic.main.image_chat_to_row.view.*
 
 
 class ChatLogActivity : AppCompatActivity() {
 
     var adapter = GroupAdapter<ViewHolder>()
 
+
+    lateinit var storageRef: StorageReference
+
+
     lateinit var currentUser: User
+    var imageUri: Uri? = null // de put anh len firebase
+
+    private val _requestCode = 1111
 
     lateinit var binding: ActivityChatLogBinding
     lateinit var user: User
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_log)
@@ -67,6 +83,11 @@ class ChatLogActivity : AppCompatActivity() {
 
         binding.listMessenger.adapter = adapter
 
+        storageRef = FirebaseStorage.getInstance().reference.child("User Images")
+
+        binding.imageSend.setOnClickListener {
+            setImage()
+        }
 
         binding.chat.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -92,7 +113,7 @@ class ChatLogActivity : AppCompatActivity() {
         listenForMessenger()
 
         binding.sendButton.setOnClickListener{
-            loadMessenger()
+            loadTextMessenger()
             binding.chat.setText("")
 
 //            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -133,13 +154,22 @@ class ChatLogActivity : AppCompatActivity() {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val chatMessenger = snapshot.getValue(ChatMessenger::class.java)
 
-                if (chatMessenger != null) {
+                if (chatMessenger != null && chatMessenger.type.equals("text")) {
                     if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
-                        adapter.add(ChatToItem(chatMessenger, currentUser))
+                        adapter.add(ChatTextToItem(chatMessenger, currentUser))
 
                     }
                     else {
-                        adapter.add(ChatFromItem(chatMessenger, user))
+                        adapter.add(ChatTextFromItem(chatMessenger, user))
+                    }
+                    binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
+                }
+                else if(chatMessenger != null && chatMessenger.type.equals("image")) {
+                    if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
+                        adapter.add(ChatImageToItem(chatMessenger, currentUser))
+                    }
+                    else {
+                        adapter.add(ChatImageFromRow(chatMessenger, user))
                     }
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
                 }
@@ -167,7 +197,7 @@ class ChatLogActivity : AppCompatActivity() {
     /**
      * ham gui tin nhan len firebase
      */
-    private fun loadMessenger() {
+    private fun loadTextMessenger() {
         val toId = user.getUid()
         val fromId = FirebaseAuth.getInstance().uid
 
@@ -193,7 +223,9 @@ class ChatLogActivity : AppCompatActivity() {
                 fromId,
                 toId,
                 System.currentTimeMillis() / 1000,
-                currentUser.getName()
+                currentUser.getName(),
+                "text",
+                ""
             )
             reference.setValue(chatMessenger)
                 .addOnSuccessListener {
@@ -214,9 +246,100 @@ class ChatLogActivity : AppCompatActivity() {
 
 
     }
+
+
+    /**
+     * ham gui tin nhan len firebase
+     *
+     * URl???
+     */
+    private fun loadImageMessenger() {
+        val toId = user.getUid()
+        val fromId = FirebaseAuth.getInstance().uid
+
+
+        val reference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId").push()
+
+        val toReference = FirebaseDatabase.getInstance().getReference("/user_messengers/$toId/$fromId").push()
+
+
+        if (fromId != null) {
+
+            if (imageUri != null) {
+                val fileRef = storageRef.child(System.currentTimeMillis().toString() + ".jpg")
+                var uploadTask: StorageTask<*>
+                uploadTask = fileRef.putFile(imageUri!!)
+
+
+                //kho hieu
+                uploadTask.continueWithTask(Continuation <UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw  it
+                        }
+                    }
+
+                    return@Continuation fileRef.downloadUrl
+                }).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        var downloadUrl = task.result // url de picasso load anh
+                        val url = downloadUrl.toString()
+
+
+                        val chatMessenger = ChatMessenger(
+                            reference.key!!,
+                            "[image]",
+                            fromId,
+                            toId,
+                            System.currentTimeMillis() / 1000,
+                            currentUser.getName(),
+                            "image",
+                            url
+                        )
+
+                        reference.setValue(chatMessenger)
+                            .addOnSuccessListener {
+                                binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
+                            }
+
+                        toReference.setValue(chatMessenger)
+                            .addOnSuccessListener {
+                                binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
+                            }
+                        val latestMessengerReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$fromId/$toId")
+                        latestMessengerReference.setValue(chatMessenger)
+
+                        val latestMessengerToReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$toId/$fromId")
+                        latestMessengerToReference.setValue(chatMessenger)
+                    }
+                    }
+                }
+
+            }
+    }
+
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == _requestCode && resultCode == Activity.RESULT_OK && data!!.data != null) {
+            imageUri = data.data
+            Toast.makeText(applicationContext, "uploading...", Toast.LENGTH_SHORT).show()
+            loadImageMessenger()
+        }
+    }
+
+
+    private fun setImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(intent, 1111)
+    }
+
 }
 
-class ChatFromItem(val chatMessenger: ChatMessenger, val user: User): Item<ViewHolder>() {
+class ChatTextFromItem(val chatMessenger: ChatMessenger, val user: User): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.messenger.text = chatMessenger.text.trim()
         Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt)
@@ -226,10 +349,9 @@ class ChatFromItem(val chatMessenger: ChatMessenger, val user: User): Item<ViewH
     override fun getLayout(): Int {
         return R.layout.chat_from_row
     }
-
 }
 
-class ChatToItem(val chatMessenger: ChatMessenger, val currentUser: User): Item<ViewHolder>() {
+class ChatTextToItem(val chatMessenger: ChatMessenger, val currentUser: User): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.messenger.text = chatMessenger.text.trim()
         Picasso.get().load(currentUser.getAvatar()).into(viewHolder.itemView.avt)
@@ -240,3 +362,28 @@ class ChatToItem(val chatMessenger: ChatMessenger, val currentUser: User): Item<
     }
 
 }
+
+class ChatImageFromRow(val chatMessenger: ChatMessenger, val user: User): Item<ViewHolder>() {
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt)
+        Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger)
+
+    }
+
+    override fun getLayout(): Int {
+        return R.layout.image_chat_from_row
+    }
+}
+
+class ChatImageToItem(val chatMessenger: ChatMessenger, val currentUser: User): Item<ViewHolder>() {
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+        Picasso.get().load(currentUser.getAvatar()).into(viewHolder.itemView.avt)
+        Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger)
+    }
+
+    override fun getLayout(): Int {
+        return R.layout.image_chat_to_row
+    }
+
+}
+
