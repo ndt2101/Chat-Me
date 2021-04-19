@@ -1,34 +1,37 @@
 package com.tuan2101.chatme
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
 import com.tuan2101.chatme.viewModel.ChatMessenger
 import com.tuan2101.chatme.viewModel.User
+import com.vanniktech.emoji.EmojiManager
+import com.vanniktech.emoji.EmojiPopup
+import com.vanniktech.emoji.ios.IosEmojiProvider
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_from_row.view.avt
-import kotlinx.android.synthetic.main.chat_from_row.view.messenger
-import com.google.android.gms.tasks.Continuation
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.image_chat_from_row.view.*
 import kotlinx.android.synthetic.main.image_chat_from_row.view.image_messenger
 import kotlinx.android.synthetic.main.image_chat_to_row.view.*
@@ -55,7 +58,11 @@ class ChatLogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_log)
 
+        EmojiManager.install(IosEmojiProvider())
+
         user = intent.getSerializableExtra("user") as User
+
+        var popup = EmojiPopup.Builder.fromRootView(binding.chatLayout).build(binding.chat as EditText)
 
         if (applicationContext != null ){
             binding.userName.text = user.getName().trim()
@@ -64,17 +71,17 @@ class ChatLogActivity : AppCompatActivity() {
 
          FirebaseDatabase.getInstance().reference.child("User")
             .child(FirebaseAuth.getInstance().currentUser.uid).addValueEventListener(object :
-                    ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        currentUser = snapshot.getValue(User::class.java)!!
-                    }
-                }
+                 ValueEventListener {
+                 override fun onDataChange(snapshot: DataSnapshot) {
+                     if (snapshot.exists()) {
+                         currentUser = snapshot.getValue(User::class.java)!!
+                     }
+                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-                    })
+                 override fun onCancelled(error: DatabaseError) {
+                     TODO("Not yet implemented")
+                 }
+             })
 
 
 
@@ -84,6 +91,10 @@ class ChatLogActivity : AppCompatActivity() {
         binding.listMessenger.adapter = adapter
 
         storageRef = FirebaseStorage.getInstance().reference.child("User Images")
+
+        binding.iconSend.setOnClickListener {
+            popup.toggle()
+        }
 
         binding.imageSend.setOnClickListener {
             setImage()
@@ -158,17 +169,14 @@ class ChatLogActivity : AppCompatActivity() {
                     if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
                         adapter.add(ChatTextToItem(chatMessenger, currentUser))
 
-                    }
-                    else {
+                    } else {
                         adapter.add(ChatTextFromItem(chatMessenger, user))
                     }
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
-                }
-                else if(chatMessenger != null && chatMessenger.type.equals("image")) {
+                } else if (chatMessenger != null && chatMessenger.type.equals("image")) {
                     if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
                         adapter.add(ChatImageToItem(chatMessenger, currentUser))
-                    }
-                    else {
+                    } else {
                         adapter.add(ChatImageFromRow(chatMessenger, user))
                     }
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
@@ -272,7 +280,7 @@ class ChatLogActivity : AppCompatActivity() {
 
 
                 //kho hieu
-                uploadTask.continueWithTask(Continuation <UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let {
                             throw  it
@@ -309,7 +317,9 @@ class ChatLogActivity : AppCompatActivity() {
                         val latestMessengerReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$fromId/$toId")
                         latestMessengerReference.setValue(chatMessenger)
 
-                        val latestMessengerToReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$toId/$fromId")
+                        val latestMessengerToReference = FirebaseDatabase.getInstance().getReference(
+                            "latest-messenger/$toId/$fromId"
+                        )
                         latestMessengerToReference.setValue(chatMessenger)
                     }
                     }
