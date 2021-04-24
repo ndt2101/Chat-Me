@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.ChatLogActivity
 
@@ -18,7 +17,7 @@ import com.tuan2101.chatme.ChatLogActivity
 import com.tuan2101.chatme.R
 
 import com.tuan2101.chatme.databinding.FragmentChatBinding
-import com.tuan2101.chatme.viewModel.ChatMessenger
+import com.tuan2101.chatme.activity.ChatMessenger
 import com.tuan2101.chatme.viewModel.User
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
@@ -72,11 +71,9 @@ class ChatFragment : Fragment() {
 
                 })
         }
-
         binding.chatList.layoutManager = LinearLayoutManager(context)
         binding.chatList.adapter = adapter
         return binding.root
-
     }
 
     fun refreshLatestChatMessenger() {

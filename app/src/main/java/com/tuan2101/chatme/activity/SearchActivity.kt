@@ -1,4 +1,4 @@
-package com.tuan2101.chatme
+package com.tuan2101.chatme.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +13,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.tuan2101.chatme.ChatLogActivity
+import com.tuan2101.chatme.R
 import com.tuan2101.chatme.adapter.RecyclerItemTouchHelper
 import com.tuan2101.chatme.adapter.SearchUserAdapter
 import com.tuan2101.chatme.databinding.ActivitySearchBinding
@@ -47,11 +49,7 @@ class SearchActivity : AppCompatActivity() {
              override fun afterTextChanged(s: Editable?) {
 
              }
-
          })
-
-
-
     }
 
     private fun retrieveAllUser() {
@@ -113,23 +111,13 @@ class SearchActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
 
             }
-
         })
     }
 
     fun navigateToChatActivity(user: User) {
         val intent = Intent(this@SearchActivity, ChatLogActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
         intent.putExtra("user", user)
-//
-//        println("======================================")
-//        println(user.getName())
-//        println(user.getAvatar())
-//        println(user.getCoverImage())
-//        println(user.getHomeTown())
-//        println("day la id ${user.getUid()}")
-//        println("======================================")
         startActivity(intent)
         finish()
     }
@@ -137,16 +125,7 @@ class SearchActivity : AppCompatActivity() {
     fun navigateToInfoActivity(user: User) {
         val intent = Intent(this@SearchActivity, InfoActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
         intent.putExtra("user", user)
-//
-//
-//        println("======================================")
-//        println(user.getName())
-//        println(user.getAvatar())
-//        println(user.getCoverImage())
-//        println(user.getHomeTown())
-//        println("======================================")
         startActivity(intent)
         finish()
     }

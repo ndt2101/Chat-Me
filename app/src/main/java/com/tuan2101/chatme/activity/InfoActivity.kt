@@ -1,9 +1,10 @@
-package com.tuan2101.chatme
+package com.tuan2101.chatme.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.squareup.picasso.Picasso
+import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityInfoBinding
 import com.tuan2101.chatme.viewModel.User
 

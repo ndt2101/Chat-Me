@@ -2,14 +2,10 @@ package com.tuan2101.chatme.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-
 import com.tuan2101.chatme.databinding.SearchViewHolderBinding
-import com.tuan2101.chatme.viewModel.ChatMessenger
-
 import com.tuan2101.chatme.viewModel.User
 
 class SearchUserAdapter(

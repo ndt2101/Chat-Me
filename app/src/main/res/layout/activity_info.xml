@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="30dp"
-        tools:context=".InfoActivity">
+        tools:context=".activity.InfoActivity">
 
         <!-- TODO: Update blank fragment layout -->
         <androidx.cardview.widget.CardView

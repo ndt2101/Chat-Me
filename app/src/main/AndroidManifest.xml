@@ -13,12 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatMe">
-        <activity android:name=".InfoActivity"></activity>
+        <activity android:name=".activity.CreateGroupChatActivity"></activity>
+        <activity android:name=".activity.InfoActivity" />
         <activity android:name=".ChatLogActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.SearchActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

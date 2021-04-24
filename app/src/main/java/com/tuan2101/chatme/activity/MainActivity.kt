@@ -1,4 +1,4 @@
-package com.tuan2101.chatme
+package com.tuan2101.chatme.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
+import com.tuan2101.chatme.R
 import com.tuan2101.chatme.adapter.TabSwitcher
 import com.tuan2101.chatme.databinding.ActivityMainBinding
 import com.tuan2101.chatme.viewModel.User
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this ,R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this , R.layout.activity_main)
 
         firebaseAuth = FirebaseAuth.getInstance()
         currentUser = firebaseAuth.currentUser

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tuan2101.chatme.BuildConfig
 import com.tuan2101.chatme.R
-import com.tuan2101.chatme.SearchActivity
+import com.tuan2101.chatme.activity.SearchActivity
 
 
 class RecyclerItemTouchHelper(private val adapterSearch: SearchUserAdapter, val activity: SearchActivity) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {

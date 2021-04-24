@@ -22,7 +22,7 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
-import com.tuan2101.chatme.viewModel.ChatMessenger
+import com.tuan2101.chatme.activity.ChatMessenger
 import com.tuan2101.chatme.viewModel.User
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
