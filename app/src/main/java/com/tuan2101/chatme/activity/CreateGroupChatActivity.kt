@@ -15,10 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
@@ -42,6 +40,8 @@ class CreateGroupChatActivity : AppCompatActivity() {
     private val _requestCode = 2222
     var imageUri: Uri? = null
     var url: String = ""
+    lateinit var userReference: DatabaseReference
+    lateinit var currentUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +54,9 @@ class CreateGroupChatActivity : AppCompatActivity() {
         users = ArrayList()
         groupMembers = MutableLiveData()
         groupMembersClone = ArrayList()
+
+
+
         retrieveAllUser()
 
         binding.search.addTextChangedListener(object : TextWatcher {
@@ -77,6 +80,25 @@ class CreateGroupChatActivity : AppCompatActivity() {
         binding.createButton.setOnClickListener {
             createGroup()
         }
+
+        /**
+         * get current user
+         */
+        FirebaseDatabase.getInstance().reference.child("User")
+            .child(FirebaseAuth.getInstance().currentUser.uid).addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        currentUser = snapshot.getValue(User::class.java)!!
+                        (groupMembersClone as ArrayList<User>).add(currentUser)
+                        binding.listMembers.text = currentUser.getName()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
     }
 
     private fun retrieveAllUser() {
@@ -172,7 +194,23 @@ class CreateGroupChatActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Toast.makeText(applicationContext, "Create group successfully", Toast.LENGTH_LONG).show()
                 }
-            }
+
+
+            /**
+             * them truong groups cho tung user co trong group
+             */
+
+                group.getMembers().forEach {
+                    userReference = FirebaseDatabase.getInstance().reference.child("User")
+                        .child(it.getUid())
+
+                    val groups = HashMap<String, Any>()
+                    groups["groups"] = group
+                    userReference.updateChildren(groups)
+                }
+
+
+        }
         else {
             Toast.makeText(applicationContext, "Group name, members list, group avatar must be set", Toast.LENGTH_SHORT).show()
         }

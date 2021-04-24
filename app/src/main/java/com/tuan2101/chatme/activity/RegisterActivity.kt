@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityRegisterBinding
+import java.security.acl.Group
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -105,6 +106,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                 detailsUser["work"] = binding.work.text.toString()
                                 detailsUser["homeTown"] = binding.homeTown.text.toString()
                                 detailsUser["search"] = binding.registerUserName.text.toString().toLowerCase()
+                                detailsUser["groups"] = HashMap<String, Any>()
 
                                 databaseReference.child("User").child(currentUId).updateChildren(detailsUser)
                                     .addOnCompleteListener {task ->
