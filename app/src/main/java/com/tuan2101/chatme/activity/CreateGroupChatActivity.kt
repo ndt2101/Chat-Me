@@ -15,10 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
@@ -42,6 +40,7 @@ class CreateGroupChatActivity : AppCompatActivity() {
     var url: String = ""
     lateinit var userReference: DatabaseReference
     lateinit var currentUser: User
+    var group: Group? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +78,7 @@ class CreateGroupChatActivity : AppCompatActivity() {
 
         binding.createButton.setOnClickListener {
             createGroup()
+            navigateToGroupChatLogActivity()
         }
 
         /**
@@ -175,6 +175,16 @@ class CreateGroupChatActivity : AppCompatActivity() {
         })
     }
 
+    fun navigateToGroupChatLogActivity() {
+        if (group != null){
+            val intent = Intent(this@CreateGroupChatActivity, GroupChatLogActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.putExtra("group", group)
+            startActivity(intent)
+            finish()
+        }
+    }
+
     fun createGroup() {
         val reference = FirebaseDatabase.getInstance().getReference("/Groups").push()
 
@@ -182,12 +192,12 @@ class CreateGroupChatActivity : AppCompatActivity() {
 
         if (groupName.isNotEmpty() && groupMembers.value!!.isNotEmpty() && url.isNotEmpty()) {
 
-            val group = Group(
+                group = Group(
                 groupName,
                 reference.key!!,
                 url,
                 System.currentTimeMillis() / 1000,
-                groupMembers.value!!
+                groupMembers.value!!, ChatMessenger()
             )
 
             reference.setValue(group)
@@ -200,13 +210,15 @@ class CreateGroupChatActivity : AppCompatActivity() {
              * them truong groups cho tung user co trong group
              */
 
-                group.getMembers().forEach {
-                    userReference = FirebaseDatabase.getInstance().reference.child("User")
-                        .child(it.getUid())
 
-                    val groups = HashMap<String, Any>()
-                    groups["groups"] = group
-                    userReference.updateChildren(groups)
+            /**
+             * can xem lai phan nay, het cmn pin
+             */
+
+            group!!.getMembers().forEach {
+                    userReference = FirebaseDatabase.getInstance().reference.child("User")
+                        .child(it.getUid()).child("/groups/${group!!.getId()}")
+                    userReference.setValue(group)
                 }
 
 

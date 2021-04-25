@@ -15,7 +15,8 @@
         android:theme="@style/Theme.ChatMe">
         <activity android:name=".activity.CreateGroupChatActivity"></activity>
         <activity android:name=".activity.InfoActivity" />
-        <activity android:name=".ChatLogActivity" />
+        <activity android:name=".activity.SingleChatLogActivity" />
+        <activity android:name=".activity.GroupChatLogActivity"/>
         <activity android:name=".activity.SearchActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LoginActivity" />

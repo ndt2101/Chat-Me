@@ -13,7 +13,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.tuan2101.chatme.ChatLogActivity
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.adapter.RecyclerItemTouchHelper
 import com.tuan2101.chatme.adapter.SearchUserAdapter
@@ -115,7 +114,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun navigateToChatActivity(user: User) {
-        val intent = Intent(this@SearchActivity, ChatLogActivity::class.java)
+        val intent = Intent(this@SearchActivity, SingleChatLogActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         intent.putExtra("user", user)
         startActivity(intent)

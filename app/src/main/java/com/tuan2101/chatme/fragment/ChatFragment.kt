@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
-import com.tuan2101.chatme.ChatLogActivity
+import com.tuan2101.chatme.activity.SingleChatLogActivity
 
 
 import com.tuan2101.chatme.R
@@ -35,6 +35,10 @@ class ChatFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
         listenForLatestMessenger()
+//
+//        println("==================================================================")
+//        println("chay ra ngoai")
+//        println("==================================================================")
 
         adapter.setOnItemClickListener { item, view ->
 
@@ -59,7 +63,7 @@ class ChatFragment : Fragment() {
 
                         if (snapshot.exists()) {
                             user = snapshot.getValue(User::class.java)!!
-                            val intent = Intent(activity, ChatLogActivity::class.java)
+                            val intent = Intent(activity, SingleChatLogActivity::class.java)
                             intent.putExtra("user", user)
                             startActivity(intent)
                         }
@@ -79,8 +83,8 @@ class ChatFragment : Fragment() {
     fun refreshLatestChatMessenger() {
         adapter.clear()
         var list = latestMessengerMap.values.toList()
-        for (item in list.size - 1 downTo 0) {
-            adapter.add(LatestMessenger(list[item]))
+        for (item in list) {
+            adapter.add(LatestMessenger(item))
         }
     }
 
@@ -113,6 +117,10 @@ class ChatFragment : Fragment() {
             }
 
         })
+
+//        println("==================================================================")
+//        println("chay vao day")
+//        println("==================================================================")
     }
 
 }
@@ -139,7 +147,7 @@ class LatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>() {
 
                     if (snapshot.exists()) {
                         user = snapshot.getValue(User::class.java)!!
-                        viewHolder.itemView.user_name.text = user!!.getName()
+                        viewHolder.itemView.user_name.text = user.getName()
                         Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt)
 
                         if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {

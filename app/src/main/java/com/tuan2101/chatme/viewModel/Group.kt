@@ -1,15 +1,18 @@
 package com.tuan2101.chatme.viewModel
 
+import com.tuan2101.chatme.activity.ChatMessenger
 import java.io.Serializable
 
 class Group(private var name: String,
             private var id: String,
             private var avt: String,
             private var createTime: Long,
-            private var members: List<User>) : Serializable {
+            private var members: List<User>,
+            private var latestMessenger: ChatMessenger
+) : Serializable {
 
 
-    constructor() : this("","","",-1,ArrayList())
+    constructor() : this("","","",-1,ArrayList(), ChatMessenger())
 
     fun getId(): String {
         return this.id
@@ -45,6 +48,14 @@ class Group(private var name: String,
 
     fun setMembers(members: List<User>) {
         this.members = members
+    }
+
+    fun getLatestMessenger(): ChatMessenger {
+        return this.latestMessenger
+    }
+
+    fun setLatestMessenger(latestMessenger: ChatMessenger) {
+        this.latestMessenger = latestMessenger
     }
 
 }

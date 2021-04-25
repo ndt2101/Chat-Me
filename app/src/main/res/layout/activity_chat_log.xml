@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:windowSoftInputMode="adjustResize"
-        tools:context=".ChatLogActivity">
+        tools:context=".activity.SingleChatLogActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
