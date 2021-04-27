@@ -78,14 +78,62 @@ class GroupChatFragment : Fragment() {
         return binding.root
     }
 
+
+    /**
+     * merge sort
+     */
+
+
+
+    fun mergeSort(list: List<GroupChatMessenger>): List<GroupChatMessenger> {
+        if (list.size <= 1) {
+            return list
+        }
+
+        val middle = list.size / 2
+        var left = list.subList(0,middle);
+        var right = list.subList(middle,list.size);
+
+        return merge(mergeSort(left), mergeSort(right))
+    }
+
+
+    fun merge(left: List<GroupChatMessenger>, right: List<GroupChatMessenger>): List<GroupChatMessenger>  {
+        var indexLeft = 0
+        var indexRight = 0
+        var newList : MutableList<GroupChatMessenger> = mutableListOf()
+
+        while (indexLeft < left.count() && indexRight < right.count()) {
+            if (left[indexLeft].timeStamp >= right[indexRight].timeStamp) {
+                newList.add(left[indexLeft])
+                indexLeft++
+            } else {
+                newList.add(right[indexRight])
+                indexRight++
+            }
+        }
+
+        while (indexLeft < left.size) {
+            newList.add(left[indexLeft])
+            indexLeft++
+        }
+
+        while (indexRight < right.size) {
+            newList.add(right[indexRight])
+            indexRight++
+        }
+
+        return newList;
+    }
+
+
+
+
     fun refreshLatestChatMessenger() {
         adapter.clear()
-        val list = latestMessengerMap.values.toList()
-        for (i in list.size - 1 downTo 0) {
+        var list = mergeSort(latestMessengerMap.values.toList())
+        for (i in list.indices) {
             adapter.add(GroupLatestMessenger(list[i]))
-            println("""""""""""""""""""")
-            println(list[i].text)
-            println(list.size)
         }
     }
 

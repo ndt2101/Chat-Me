@@ -260,6 +260,13 @@ class GroupChatLogActivity : AppCompatActivity() {
 
             map["latestMessenger"] = chatMessenger
             latestMessengerReference.updateChildren(map)
+
+            group.getMembers().forEach {
+                val latestMessengerForMembersReference = FirebaseDatabase.getInstance()
+                    .getReference("/User_Groups/${it.getUid()}/${groupId}")
+
+                latestMessengerForMembersReference.updateChildren(map)
+            }
         }
     }
 
@@ -326,6 +333,13 @@ class GroupChatLogActivity : AppCompatActivity() {
 
                         map["latestMessenger"] = chatMessenger
                         latestMessengerReference.updateChildren(map)
+
+                        group.getMembers().forEach {
+                            val latestMessengerForMembersReference = FirebaseDatabase.getInstance()
+                                .getReference("/User_Groups/${it.getUid()}/${groupId}")
+
+                            latestMessengerForMembersReference.updateChildren(map)
+                        }
 
                     }
                 }

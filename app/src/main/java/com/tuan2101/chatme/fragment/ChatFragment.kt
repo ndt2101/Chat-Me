@@ -80,11 +80,62 @@ class ChatFragment : Fragment() {
         return binding.root
     }
 
+
+    /**
+     * merge sort
+     */
+
+
+
+    fun mergeSort(list: List<ChatMessenger>): List<ChatMessenger> {
+        if (list.size <= 1) {
+            return list
+        }
+
+        val middle = list.size / 2
+        var left = list.subList(0,middle);
+        var right = list.subList(middle,list.size);
+
+        return merge(mergeSort(left), mergeSort(right))
+    }
+
+
+    fun merge(left: List<ChatMessenger>, right: List<ChatMessenger>): List<ChatMessenger>  {
+        var indexLeft = 0
+        var indexRight = 0
+        var newList : MutableList<ChatMessenger> = mutableListOf()
+
+        while (indexLeft < left.count() && indexRight < right.count()) {
+            if (left[indexLeft].timeStamp >= right[indexRight].timeStamp) {
+                newList.add(left[indexLeft])
+                indexLeft++
+            } else {
+                newList.add(right[indexRight])
+                indexRight++
+            }
+        }
+
+        while (indexLeft < left.size) {
+            newList.add(left[indexLeft])
+            indexLeft++
+        }
+
+        while (indexRight < right.size) {
+            newList.add(right[indexRight])
+            indexRight++
+        }
+
+        return newList;
+    }
+
+
+
+
     fun refreshLatestChatMessenger() {
         adapter.clear()
-        var list = latestMessengerMap.values.toList()
-        for (i in list.size - 1 downTo 0) {
-            adapter.add(LatestMessenger(list[i]))
+        var list = mergeSort(latestMessengerMap.values.toList())
+        for (element in list) {
+            adapter.add(LatestMessenger(element))
         }
     }
 
