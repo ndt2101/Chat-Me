@@ -197,7 +197,17 @@ class CreateGroupChatActivity : AppCompatActivity() {
                 reference.key!!,
                 url,
                 System.currentTimeMillis() / 1000,
-                groupMembers.value!!, ChatMessenger()
+                groupMembers.value!!, GroupChatMessenger(
+                        reference.key!!,
+                        "Now you can chat with each others in group",
+                        currentUser.getUid(),
+                        reference.key!!,
+                        System.currentTimeMillis() / 1000,
+                        groupName,
+                        "text",
+                        "",
+                        url
+                )
             )
 
             reference.setValue(group)
@@ -212,16 +222,14 @@ class CreateGroupChatActivity : AppCompatActivity() {
 
 
             /**
-             * can xem lai phan nay, het cmn pin
+             * can xem lai phan nay
              */
 
             group!!.getMembers().forEach {
-                    userReference = FirebaseDatabase.getInstance().reference.child("User")
-                        .child(it.getUid()).child("/groups/${group!!.getId()}")
+                    userReference = FirebaseDatabase.getInstance().reference.child("User_Groups")
+                        .child(it.getUid()).child("${group!!.getId()}")
                     userReference.setValue(group)
                 }
-
-
         }
         else {
             Toast.makeText(applicationContext, "Group name, members list, group avatar must be set", Toast.LENGTH_SHORT).show()

@@ -29,7 +29,7 @@ class ChatFragment : Fragment() {
 
     lateinit var binding: FragmentChatBinding
     val adapter = GroupAdapter<ViewHolder>()
-    var latestMessengerMap = HashMap<String, ChatMessenger>()
+    var latestMessengerMap = LinkedHashMap<String, ChatMessenger>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
@@ -83,8 +83,8 @@ class ChatFragment : Fragment() {
     fun refreshLatestChatMessenger() {
         adapter.clear()
         var list = latestMessengerMap.values.toList()
-        for (item in list) {
-            adapter.add(LatestMessenger(item))
+        for (i in list.size - 1 downTo 0) {
+            adapter.add(LatestMessenger(list[i]))
         }
     }
 

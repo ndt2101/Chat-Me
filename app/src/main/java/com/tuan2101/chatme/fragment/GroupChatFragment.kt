@@ -11,10 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
-import com.tuan2101.chatme.activity.ChatMessenger
-import com.tuan2101.chatme.activity.CreateGroupChatActivity
-import com.tuan2101.chatme.activity.GroupChatLogActivity
-import com.tuan2101.chatme.activity.SingleChatLogActivity
+import com.tuan2101.chatme.activity.*
 import com.tuan2101.chatme.databinding.FragmentGroupChatBinding
 import com.tuan2101.chatme.viewModel.Group
 import com.tuan2101.chatme.viewModel.User
@@ -27,7 +24,7 @@ class GroupChatFragment : Fragment() {
 
     lateinit var binding: FragmentGroupChatBinding
     val adapter = GroupAdapter<ViewHolder>()
-    val latestMessengerMap = HashMap<String, ChatMessenger>()
+    val latestMessengerMap = LinkedHashMap<String, GroupChatMessenger>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -84,10 +81,10 @@ class GroupChatFragment : Fragment() {
     fun refreshLatestChatMessenger() {
         adapter.clear()
         val list = latestMessengerMap.values.toList()
-        for (element in list) {
-            adapter.add(GroupLatestMessenger(element))
+        for (i in list.size - 1 downTo 0) {
+            adapter.add(GroupLatestMessenger(list[i]))
             println("""""""""""""""""""")
-            println(element.text)
+            println(list[i].text)
             println(list.size)
         }
     }
@@ -95,7 +92,7 @@ class GroupChatFragment : Fragment() {
     private fun listenForLatestMessenger() {
         val fromId = FirebaseAuth.getInstance().uid
 
-        val reference = FirebaseDatabase.getInstance().getReference("/User/$fromId/groups")
+        val reference = FirebaseDatabase.getInstance().getReference("/User_Groups/$fromId")
 
         reference.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -137,7 +134,7 @@ class GroupChatFragment : Fragment() {
 }
 
 
-class GroupLatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>() {
+class GroupLatestMessenger(val chatMessenger: GroupChatMessenger) : Item<ViewHolder>() {
 
     lateinit var group: Group
 
@@ -145,8 +142,9 @@ class GroupLatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>
 
         var fromName: String
 
+
         FirebaseDatabase.getInstance().getReference("Groups").child(chatMessenger.toId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     if (snapshot.exists()) {
@@ -154,13 +152,8 @@ class GroupLatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>
                         viewHolder.itemView.user_name.text = group.getName()
                         Picasso.get().load(group.getAvt()).into(viewHolder.itemView.avt)
 
-                        if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
-                            fromName = "You"
-                        }
-                        else {
-                            fromName = chatMessenger.fromName
-                        }
-                        viewHolder.itemView.last_messenger.text = "$fromName: ${chatMessenger.text}"
+                        viewHolder.itemView.last_messenger.text =
+                            "${group.getLatestMessenger().fromName}: ${group.getLatestMessenger().text}"
                     }
                 }
 
