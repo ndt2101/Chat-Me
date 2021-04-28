@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.iid.FirebaseInstanceId
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.activity.SingleChatLogActivity
 
@@ -23,7 +24,12 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.chat_view_holder.view.*
+import java.lang.reflect.Field
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
+val map = HashMap<String, Any>()
 
 class ChatFragment : Fragment() {
 
@@ -35,7 +41,23 @@ class ChatFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
         listenForLatestMessenger()
-//
+
+
+        /**
+         * update token
+         */
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { p0 ->
+            if (p0.isSuccessful && p0.result != null) {
+                map["token"] = p0.result!!.token
+                FirebaseAuth.getInstance().uid?.let {
+                    FirebaseDatabase.getInstance().reference.child("User").child(
+                        it
+                    ).updateChildren(map)
+                }
+
+            }
+        }
+
 //        println("==================================================================")
 //        println("chay ra ngoai")
 //        println("==================================================================")

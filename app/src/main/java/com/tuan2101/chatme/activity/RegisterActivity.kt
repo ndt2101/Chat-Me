@@ -67,21 +67,21 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         var email = binding.registerEmail.text.toString()
         var password = binding.registerPassword.text.toString()
 
-        progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Loading")
-        progressDialog.setMessage("Account is creating...")
-        progressDialog.setCanceledOnTouchOutside(true)
-        progressDialog.show()
+//        progressDialog = ProgressDialog(this)
+//        progressDialog.setTitle("Loading")
+//        progressDialog.setMessage("Account is creating...")
+//        progressDialog.setCanceledOnTouchOutside(true)
+//        progressDialog.show()
 
         if (email.isEmpty())
         {
             Toast.makeText(this@RegisterActivity,"Email cannot be empty",Toast.LENGTH_SHORT).show()
-            progressDialog.dismiss()
+//            progressDialog.dismiss()
         }
         else if (password.isEmpty())
         {
             Toast.makeText(this@RegisterActivity,"Password cannot be empty",Toast.LENGTH_SHORT).show()
-            progressDialog.dismiss()
+//            progressDialog.dismiss()
         }
         else {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -107,19 +107,20 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                 detailsUser["homeTown"] = binding.homeTown.text.toString()
                                 detailsUser["search"] = binding.registerUserName.text.toString().toLowerCase()
                                 detailsUser["groups"] = HashMap<String, Any>()
+                                detailsUser["token"] = ""
 
                                 databaseReference.child("User").child(currentUId).updateChildren(detailsUser)
                                     .addOnCompleteListener {task ->
                                         if (task.isSuccessful) {
                                             navigateToMainActivity()
                                             Toast.makeText(this@RegisterActivity, " Account create successfully", Toast.LENGTH_SHORT).show()
-                                            progressDialog.dismiss()
+//                                            progressDialog.dismiss()
                                         }
                                     }
                             }
                             else {
                                 Toast.makeText(this@RegisterActivity,"Error: " + p0.exception?.message.toString(), Toast.LENGTH_SHORT).show()
-                                progressDialog.dismiss()
+//                                progressDialog.dismiss()
                             }
                         }
 

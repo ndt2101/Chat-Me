@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.adapter.SearchUserToAddAdapter
 import com.tuan2101.chatme.databinding.ActivityCreateGroupChatBinding
+import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.viewModel.Group
 import com.tuan2101.chatme.viewModel.User
 import kotlinx.android.synthetic.main.image_chat_from_row.view.*
@@ -53,7 +54,6 @@ class CreateGroupChatActivity : AppCompatActivity() {
         users = ArrayList()
         groupMembers = MutableLiveData()
         groupMembersClone = ArrayList()
-
 
 
         retrieveAllUser()

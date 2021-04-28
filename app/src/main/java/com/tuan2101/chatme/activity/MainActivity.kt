@@ -6,9 +6,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.iid.InstanceIdResult
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.adapter.TabSwitcher
@@ -21,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     lateinit var binding: ActivityMainBinding
     lateinit var referenceUser: DatabaseReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +49,13 @@ class MainActivity : AppCompatActivity() {
                     if (snapshot.exists()) {
                         val user: User? = snapshot.getValue(User::class.java)
 
-                        binding.userName.text = user!!.getName().toString()
+                        binding.userName.text = user!!.getName()
                         Picasso.get()
                             .load(user.getAvatar())
                             .fit()
                             .into(binding.imageProfile)
+
+
                     }
                 }
 
@@ -57,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+
         }
 
         binding.search.setOnClickListener {
@@ -74,6 +82,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendToLoginActivity() {
+        var map = HashMap<String, Any>()
+        map["token"] = ""
+        currentUser?.let { FirebaseDatabase.getInstance().reference.child("User").child(it.uid).updateChildren(map) }
         val intent = Intent(this@MainActivity, LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)

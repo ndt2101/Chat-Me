@@ -12,8 +12,10 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityLoginBinding
+import com.tuan2101.chatme.viewModel.User
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -33,6 +35,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         firebaseAuth = FirebaseAuth.getInstance()
         currentUser = firebaseAuth!!.currentUser
+
     }
 
     override fun onStart() {

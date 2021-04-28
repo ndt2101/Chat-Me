@@ -15,6 +15,7 @@ class User() : Serializable {
     private var homeTown: String = ""
     private var search: String = ""
     private var groups: HashMap<String, Any> = HashMap()
+    private var token: String? = null
 
 
     constructor(name: String,
@@ -26,7 +27,8 @@ class User() : Serializable {
                 work: String,
                 homeTown: String,
                 search: String,
-                groups: HashMap<String, Any>
+                groups: HashMap<String, Any>,
+                token: String
     ) : this() {
         this.name = name
         this.uid = uid
@@ -38,6 +40,7 @@ class User() : Serializable {
         this.homeTown = homeTown
         this.search = search
         this.groups = groups
+        this.token = token
     }
 
 
@@ -116,5 +119,13 @@ class User() : Serializable {
 
     fun setGroup(groups: HashMap<String, Any>) {
         this.groups = groups
+    }
+
+    fun getToken(): String? {
+        return this.token
+    }
+
+    fun setToken(token: String) {
+        this.token = token
     }
 }

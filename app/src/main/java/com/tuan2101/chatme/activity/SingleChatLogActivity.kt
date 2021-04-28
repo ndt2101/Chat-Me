@@ -150,6 +150,16 @@ class SingleChatLogActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.videoCall.setOnClickListener {
+            makeVideoCall()
+            navigateToOutGoingActivity("video")
+        }
+
+        binding.voiceCall.setOnClickListener {
+            makeVoiceCall()
+            navigateToOutGoingActivity("voice")
+        }
     }
 
     /**
@@ -326,6 +336,40 @@ class SingleChatLogActivity : AppCompatActivity() {
                 }
 
             }
+    }
+
+    /**
+     * navigate to outgoing invitation activity
+     */
+
+    fun navigateToOutGoingActivity(type: String) {
+        val intent = Intent(this@SingleChatLogActivity, OutgoingInvitationActivity::class.java)
+        intent.putExtra("user", user)
+        intent.putExtra("type",type)
+        startActivity(intent)
+        finish()
+    }
+
+
+    /**
+     * video call
+     */
+    fun makeVideoCall() {
+        if (user.getToken() != "") {
+            Toast.makeText(applicationContext, "Video call to ${user.getName()}", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(applicationContext, "${user.getName()} is not signing in any device", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun makeVoiceCall() {
+        if (user.getToken() != "") {
+            Toast.makeText(applicationContext, "Voice call to ${user.getName()}", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(applicationContext, "${user.getName()} is not signing in any device", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

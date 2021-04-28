@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/button_style"
+        android:background="@drawable/text_from_row_style"
         android:maxWidth="265dp"
         android:padding="15dp"
         android:text="Khong lam ma doi co an thi chi co an db an c"
