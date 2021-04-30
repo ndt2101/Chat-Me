@@ -1,9 +1,14 @@
 package com.tuan2101.chatme.activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -91,7 +96,9 @@ class OutgoingInvitationActivity : AppCompatActivity() {
         }
 
         binding.decline.setOnClickListener {
-            onBackPressed()
+            if (user != null) {
+                cancelInvitation(user.getToken()!!)
+            }
         }
 
 
@@ -133,6 +140,10 @@ class OutgoingInvitationActivity : AppCompatActivity() {
                     if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
                         Toast.makeText(this@OutgoingInvitationActivity, "Invitation sent successfully",Toast.LENGTH_SHORT).show()
                     }
+                    else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
+                        Toast.makeText(this@OutgoingInvitationActivity, "Invitation rejected",Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
                 }
                 else {
                     Toast.makeText(this@OutgoingInvitationActivity, response.message(),Toast.LENGTH_SHORT).show()
@@ -146,5 +157,54 @@ class OutgoingInvitationActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    fun cancelInvitation(receiverToken: String) {
+        try {
+            val tokens = JSONArray()
+            tokens.put(receiverToken)
+
+            val body = JSONObject()
+            val data = JSONObject()
+
+            data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION_RESPONSE)
+            data.put(Constants.REMOTE_MSG_INVITATION_RESPONSE, Constants.REMOTE_MSG_INVITATION_CANCELLED)
+
+            body.put(Constants.REMOTE_MSG_DATA, data)
+            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
+
+            sendRemoteMessage(body.toString(), Constants.REMOTE_MSG_INVITATION_RESPONSE)
+        } catch (e: Exception) {
+            Toast.makeText(this@OutgoingInvitationActivity, e.message, Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    val invitationResponseReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val type = intent!!.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+            if (type != null) {
+                if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
+                    Toast.makeText(applicationContext, "Invitation accepted", Toast.LENGTH_SHORT).show()
+                } else if (type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED)) {
+                    Toast.makeText(applicationContext, "Invitation rejected", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
+            invitationResponseReceiver, IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(
+            invitationResponseReceiver
+        )
     }
 }
