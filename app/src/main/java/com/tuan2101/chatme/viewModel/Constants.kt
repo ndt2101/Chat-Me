@@ -16,6 +16,8 @@ class Constants {
         const val REMOTE_MSG_INVITATION_REJECTED = "rejected"
         const val REMOTE_MSG_INVITATION_CANCELLED = "cancelled"
 
+        const val REMOTE_MSG_MEETING_ROOM = "meetingRoom"
+
 
 
         /**

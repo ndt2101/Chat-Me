@@ -30,6 +30,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 import kotlin.reflect.typeOf
 
 class OutgoingInvitationActivity : AppCompatActivity() {
@@ -38,6 +39,7 @@ class OutgoingInvitationActivity : AppCompatActivity() {
     lateinit var user: User
     lateinit var inviterToken: String
     lateinit var currentUser: User
+    lateinit var meetingRoom: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,6 +122,10 @@ class OutgoingInvitationActivity : AppCompatActivity() {
             data.put("userAvt", currentUser.getAvatar())
             data.put("userName", currentUser.getName())
             data.put(Constants.REMOTE_MSG_INVITER_TOKEN, inviterToken)
+
+            meetingRoom = "${currentUser.getUid()}_${UUID.randomUUID().toString().substring(0, 5)}"
+
+            data.put(Constants.REMOTE_MSG_MEETING_ROOM, meetingRoom)
 
             body.put(Constants.REMOTE_MSG_DATA, data)
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
