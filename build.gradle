@@ -21,6 +21,9 @@ allprojects {
         google()
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven {
+            url "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases"
+        }
     }
 }
 

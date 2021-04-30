@@ -15,11 +15,14 @@ import com.tuan2101.chatme.databinding.ActivityIncomingInvitationBinding
 import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.network.ApiService
 import com.tuan2101.chatme.viewModel.Constants
+import org.jitsi.meet.sdk.JitsiMeetActivity
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URL
 
 class IncomingInvitationActivity : AppCompatActivity() {
     lateinit var binding: ActivityIncomingInvitationBinding
@@ -86,21 +89,49 @@ class IncomingInvitationActivity : AppCompatActivity() {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
-                        Toast.makeText(this@IncomingInvitationActivity, "Invitation accepted", Toast.LENGTH_SHORT).show()
-                    }else {
-                        Toast.makeText(this@IncomingInvitationActivity, "Invitation rejected", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(
+//                            this@IncomingInvitationActivity,
+//                            "Invitation accepted",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
 
+                        try {
+                            val serviceURL = URL("https://meet.jit.si")
+                            val conferenceOptions = JitsiMeetConferenceOptions.Builder()
+                                .setServerURL(serviceURL)
+                                .setWelcomePageEnabled(false)
+                                .setRoom(intent.getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
+                                .build()
+
+                            JitsiMeetActivity.launch(this@IncomingInvitationActivity, conferenceOptions)
+                            finish()
+                        } catch (e: Exception) {
+                            Toast.makeText(this@IncomingInvitationActivity, e.message, Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+
+                    } else {
+                        Toast.makeText(
+                            this@IncomingInvitationActivity,
+                            "Invitation rejected",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
                     }
+                } else {
+                    Toast.makeText(
+                        this@IncomingInvitationActivity,
+                        response.message(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
                 }
-                else {
-                    Toast.makeText(this@IncomingInvitationActivity, response.message(), Toast.LENGTH_SHORT).show()
 
-                }
-                finish()
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
-                Toast.makeText(this@IncomingInvitationActivity, t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@IncomingInvitationActivity, t.message, Toast.LENGTH_SHORT)
+                    .show()
                 finish()
             }
 

@@ -25,11 +25,14 @@ import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.network.ApiService
 import com.tuan2101.chatme.viewModel.Constants
 import com.tuan2101.chatme.viewModel.User
+import org.jitsi.meet.sdk.JitsiMeetActivity
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URL
 import java.util.*
 import kotlin.reflect.typeOf
 
@@ -191,7 +194,21 @@ class OutgoingInvitationActivity : AppCompatActivity() {
             val type = intent!!.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE)
             if (type != null) {
                 if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
-                    Toast.makeText(applicationContext, "Invitation accepted", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(applicationContext, "Invitation accepted", Toast.LENGTH_SHORT).show()
+                    try {
+                        val serviceURL = URL("https://meet.jit.si")
+                        val conferenceOptions = JitsiMeetConferenceOptions.Builder()
+                            .setServerURL(serviceURL)
+                            .setWelcomePageEnabled(false)
+                            .setRoom(meetingRoom)
+                            .build()
+
+                        JitsiMeetActivity.launch(this@OutgoingInvitationActivity, conferenceOptions)
+                        finish()
+                    } catch (e: Exception) {
+                        Toast.makeText(this@OutgoingInvitationActivity, e.message, Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
                 } else if (type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED)) {
                     Toast.makeText(applicationContext, "Invitation rejected", Toast.LENGTH_SHORT).show()
                     finish()
