@@ -22,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
@@ -165,6 +166,26 @@ class GroupChatLogActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.videoCall.setOnClickListener {
+            val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
+            intent.putExtra("members", Gson().toJson(group.getMembers()))
+            intent.putExtra("groupName", group.getName())
+            intent.putExtra("groupAvt", group.getAvt())
+            intent.putExtra("type", "video")
+            intent.putExtra("isMultiple", true)
+            startActivity(intent)
+        }
+
+        binding.voiceCall.setOnClickListener {
+            val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
+            intent.putExtra("members", Gson().toJson(group.getMembers()))
+            intent.putExtra("groupName", group.getName())
+            intent.putExtra("groupAvt", group.getAvt())
+            intent.putExtra("type", "voice")
+            intent.putExtra("isMultiple", true)
+            startActivity(intent)
+        }
     }
 
     /**

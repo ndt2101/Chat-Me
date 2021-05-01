@@ -1,10 +1,14 @@
 package com.tuan2101.chatme.activity
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -25,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     lateinit var binding: ActivityMainBinding
     lateinit var referenceUser: DatabaseReference
+    var REQUEST_CODE_BATTERY_OPTIMIXATION = 1000
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +76,7 @@ class MainActivity : AppCompatActivity() {
             sendToSearchActivity()
         }
 
+        checkForBatteryOptimization()
     }
 
     override fun onStart() {
@@ -117,4 +123,30 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    fun checkForBatteryOptimization() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val powerManager = getSystemService((POWER_SERVICE)) as PowerManager
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                val builder = AlertDialog.Builder(this@MainActivity)
+                builder.setTitle("Warning")
+                builder.setMessage("Battery optimization is enable. It can interrupt running background services.")
+                builder.setPositiveButton("Disable") { dialog, which ->
+                    val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                    startActivityForResult(intent, REQUEST_CODE_BATTERY_OPTIMIXATION)
+                }
+
+                builder.setNegativeButton("Cancel") { dialog, which ->
+                    dialog.dismiss()
+                }
+                builder.show()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_BATTERY_OPTIMIXATION) {
+            checkForBatteryOptimization()
+        }
+    }
 }
