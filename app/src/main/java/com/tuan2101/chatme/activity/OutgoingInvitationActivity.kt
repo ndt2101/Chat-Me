@@ -43,6 +43,7 @@ class OutgoingInvitationActivity : AppCompatActivity() {
     lateinit var inviterToken: String
     lateinit var currentUser: User
     lateinit var meetingRoom: String
+    lateinit var _type: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +67,7 @@ class OutgoingInvitationActivity : AppCompatActivity() {
 
         user = intent.getSerializableExtra("user") as User
 
-        val type = intent.getStringExtra("type")
+        _type = intent.getStringExtra("type")!!
 
 
         FirebaseDatabase.getInstance().reference.child("User")
@@ -77,8 +78,8 @@ class OutgoingInvitationActivity : AppCompatActivity() {
                         currentUser = snapshot.getValue(User::class.java)!!
 
                         inviterToken = currentUser.getToken().toString()
-                        if (type != null && user != null) {
-                            initiateMeeting(type, user.getToken()!!)
+                        if (_type != null && user != null) {
+                            initiateMeeting(_type, user.getToken()!!)
                         }
                     }
                 }
@@ -88,7 +89,7 @@ class OutgoingInvitationActivity : AppCompatActivity() {
                 }
             })
 
-        if (type.equals("video")) {
+        if (_type.equals("video")) {
             binding.callingType.setImageResource(R.drawable.ic_video_call)
         }
         else {
@@ -197,13 +198,17 @@ class OutgoingInvitationActivity : AppCompatActivity() {
 //                    Toast.makeText(applicationContext, "Invitation accepted", Toast.LENGTH_SHORT).show()
                     try {
                         val serviceURL = URL("https://meet.jit.si")
-                        val conferenceOptions = JitsiMeetConferenceOptions.Builder()
-                            .setServerURL(serviceURL)
-                            .setWelcomePageEnabled(false)
-                            .setRoom(meetingRoom)
-                            .build()
 
-                        JitsiMeetActivity.launch(this@OutgoingInvitationActivity, conferenceOptions)
+                        val builder = JitsiMeetConferenceOptions.Builder()
+                        builder.setServerURL(serviceURL)
+                        builder.setWelcomePageEnabled(false)
+                        builder.setRoom(meetingRoom)
+                        if (_type.equals("voice")) {
+                            builder.setVideoMuted(true)
+//                            builder.setAudioOnly(true)
+                        }
+
+                        JitsiMeetActivity.launch(this@OutgoingInvitationActivity, builder.build())
                         finish()
                     } catch (e: Exception) {
                         Toast.makeText(this@OutgoingInvitationActivity, e.message, Toast.LENGTH_SHORT).show()

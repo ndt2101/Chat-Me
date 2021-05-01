@@ -26,11 +26,12 @@ import java.net.URL
 
 class IncomingInvitationActivity : AppCompatActivity() {
     lateinit var binding: ActivityIncomingInvitationBinding
+    lateinit var _type: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =  DataBindingUtil.setContentView(this, R.layout.activity_incoming_invitation)
 
-        val type = intent.getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE)
+        _type = intent.getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE)!!
 
         val userAvt = intent.getStringExtra("userAvt")
 
@@ -40,7 +41,7 @@ class IncomingInvitationActivity : AppCompatActivity() {
 
         Picasso.get().load(userAvt).into(binding.userAvt)
 
-        if (type!!.equals("video")) {
+        if (_type.equals("video")) {
             binding.callingType.setImageResource(R.drawable.ic_video_call)
         }else {
             binding.callingType.setImageResource(R.drawable.ic_voice_call)
@@ -89,21 +90,29 @@ class IncomingInvitationActivity : AppCompatActivity() {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
-//                        Toast.makeText(
-//                            this@IncomingInvitationActivity,
-//                            "Invitation accepted",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
+                        Toast.makeText(
+                            this@IncomingInvitationActivity,
+                            "Invitation accepted",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         try {
                             val serviceURL = URL("https://meet.jit.si")
-                            val conferenceOptions = JitsiMeetConferenceOptions.Builder()
-                                .setServerURL(serviceURL)
-                                .setWelcomePageEnabled(false)
-                                .setRoom(intent.getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
-                                .build()
 
-                            JitsiMeetActivity.launch(this@IncomingInvitationActivity, conferenceOptions)
+
+                            val builder = JitsiMeetConferenceOptions.Builder()
+                            builder.setServerURL(serviceURL)
+                            builder.setWelcomePageEnabled(false)
+                            builder.setRoom(intent.getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
+
+
+                            if (_type.equals("voice")) {
+                                builder.setVideoMuted(true)
+//                                builder.setAudioOnly(true)
+                            }
+
+
+                            JitsiMeetActivity.launch(this@IncomingInvitationActivity, builder.build())
                             finish()
                         } catch (e: Exception) {
                             Toast.makeText(this@IncomingInvitationActivity, e.message, Toast.LENGTH_SHORT).show()
