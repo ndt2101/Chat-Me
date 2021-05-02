@@ -169,7 +169,13 @@ class GroupChatLogActivity : AppCompatActivity() {
 
         binding.videoCall.setOnClickListener {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
-            intent.putExtra("members", Gson().toJson(group.getMembers()))
+            val removeCurrentUser = ArrayList<User>()
+            group.getMembers().forEach {
+                if (it.getUid() != currentUser.getUid()) {
+                    removeCurrentUser.add(it)
+                }
+            }
+            intent.putExtra("members", Gson().toJson(removeCurrentUser))
             intent.putExtra("groupName", group.getName())
             intent.putExtra("groupAvt", group.getAvt())
             intent.putExtra("type", "video")
@@ -179,7 +185,13 @@ class GroupChatLogActivity : AppCompatActivity() {
 
         binding.voiceCall.setOnClickListener {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
-            intent.putExtra("members", Gson().toJson(group.getMembers()))
+            val removeCurrentUser = ArrayList<User>()
+            group.getMembers().forEach {
+                if (it.getUid() != currentUser.getUid()) {
+                    removeCurrentUser.add(it)
+                }
+            }
+            intent.putExtra("members", Gson().toJson(removeCurrentUser))
             intent.putExtra("groupName", group.getName())
             intent.putExtra("groupAvt", group.getAvt())
             intent.putExtra("type", "voice")

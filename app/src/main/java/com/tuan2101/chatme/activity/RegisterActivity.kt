@@ -100,8 +100,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                 detailsUser["name"] = binding.registerUserName.text.toString()
                                 detailsUser["uid"] = currentUId
                                 detailsUser["status"] = "offline"
-                                detailsUser["avatar"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/kha_banh.jpg?alt=media&token=cb80b64a-8ccb-4076-92eb-6ed04f5f606f"
-                                detailsUser["coverImage"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/anh_8734430258343706624.jpg?alt=media&token=6f28ee1e-338f-4bf0-85cb-48cbdbe90124"
+                                detailsUser["avatar"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/Trend-Avatar-Facebook%20(1).jpg?alt=media&token=dfb1aa1f-f200-4abf-bb08-f0af44bb4d4a"
+                                detailsUser["coverImage"] = "https://firebasestorage.googleapis.com/v0/b/chat-app-1ef01.appspot.com/o/bia.png?alt=media&token=bb65c01d-eaf0-4953-bd7a-a369c4510dea"
                                 detailsUser["introduceYourself"] = binding.introduce.text.toString()
                                 detailsUser["work"] = binding.work.text.toString()
                                 detailsUser["homeTown"] = binding.homeTown.text.toString()
