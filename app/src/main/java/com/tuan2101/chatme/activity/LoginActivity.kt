@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -36,6 +37,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         firebaseAuth = FirebaseAuth.getInstance()
         currentUser = firebaseAuth!!.currentUser
 
+        binding.forgotPassword.setOnClickListener {
+            resetPassword()
+        }
+
     }
 
     override fun onStart() {
@@ -59,6 +64,20 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
         else if (v == binding.loginButton) {
             allowUserLogin()
+        }
+    }
+
+    private fun resetPassword() {
+        if (binding.loginEmail.text.toString().isNotEmpty()) {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(binding.loginEmail.text.toString())
+                .addOnSuccessListener {
+                    Toast.makeText(this@LoginActivity, "We have sent the link to your email for password resetting", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this@LoginActivity, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+        }else {
+            Toast.makeText(this@LoginActivity, "Enter your email", Toast.LENGTH_SHORT).show()
         }
     }
 

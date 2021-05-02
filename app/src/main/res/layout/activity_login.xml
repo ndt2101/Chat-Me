@@ -67,6 +67,7 @@
             android:textSize="15sp"
             android:textStyle="bold"
             android:textAlignment="textEnd"
+            android:layout_marginTop="15dp"
             />
 
 
