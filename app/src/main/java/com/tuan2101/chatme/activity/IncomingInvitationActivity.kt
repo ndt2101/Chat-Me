@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -27,6 +28,7 @@ import java.net.URL
 class IncomingInvitationActivity : AppCompatActivity() {
     lateinit var binding: ActivityIncomingInvitationBinding
     lateinit var _type: String
+    lateinit var mediaPlayer: MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =  DataBindingUtil.setContentView(this, R.layout.activity_incoming_invitation)
@@ -60,6 +62,7 @@ class IncomingInvitationActivity : AppCompatActivity() {
                 intent.getStringExtra(Constants.REMOTE_MSG_INVITER_TOKEN)!!
             )
         }
+
     }
 
     fun sendInvitationResponse(type: String, receiverToken: String) {
@@ -162,6 +165,9 @@ class IncomingInvitationActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        mediaPlayer = MediaPlayer.create(this,R.raw.musi)
+        mediaPlayer.isLooping=true
+        mediaPlayer.start()
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             invitationResponseReceiver, IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
         )
@@ -169,6 +175,7 @@ class IncomingInvitationActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        mediaPlayer.stop()
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(
             invitationResponseReceiver
         )

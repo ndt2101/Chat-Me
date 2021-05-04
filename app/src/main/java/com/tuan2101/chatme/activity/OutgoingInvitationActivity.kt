@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -44,6 +45,7 @@ import kotlin.collections.ArrayList
     lateinit var _type: String
     var rejectionCount = 0
     var totalReceivers = 0
+    lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -281,6 +283,9 @@ import kotlin.collections.ArrayList
 
     override fun onStart() {
         super.onStart()
+        mediaPlayer = MediaPlayer.create(this,R.raw.invitation_music)
+        mediaPlayer.isLooping=true
+        mediaPlayer.start()
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             invitationResponseReceiver, IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
         )
@@ -288,6 +293,7 @@ import kotlin.collections.ArrayList
 
     override fun onStop() {
         super.onStop()
+        mediaPlayer.stop()
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(
             invitationResponseReceiver
         )

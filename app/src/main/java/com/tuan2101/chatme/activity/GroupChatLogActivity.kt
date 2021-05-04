@@ -179,7 +179,7 @@ class GroupChatLogActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
             val removeCurrentUser = ArrayList<User>()
             group.getMembers().forEach {
-                if (it.getUid() != currentUser.getUid()) {
+                if (!it.getUid().equals(currentUser.getUid())) {
                     removeCurrentUser.add(it)
                 }
             }
@@ -195,7 +195,7 @@ class GroupChatLogActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
             val removeCurrentUser = ArrayList<User>()
             group.getMembers().forEach {
-                if (it.getUid() != currentUser.getUid()) {
+                if (!it.getUid().equals(currentUser.getUid())) {
                     removeCurrentUser.add(it)
                 }
             }
