@@ -161,6 +161,8 @@ class ChatFragment : Fragment() {
         }
     }
 
+
+
     private fun listenForLatestMessenger() {
         val fromId = FirebaseAuth.getInstance().uid
         val reference = FirebaseDatabase.getInstance().getReference("/latest-messenger/$fromId")
@@ -214,14 +216,22 @@ class LatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>() {
             chatToUserId = chatMessenger.fromId
         }
 
-        val reference = FirebaseDatabase.getInstance().getReference("User").child(chatToUserId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+        FirebaseDatabase.getInstance().getReference("User").child(chatToUserId)
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     if (snapshot.exists()) {
                         user = snapshot.getValue(User::class.java)!!
                         viewHolder.itemView.user_name.text = user.getName()
                         Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt)
+
+                        if (user.getStatus().equals("online")) {
+                            viewHolder.itemView.online.visibility = View.VISIBLE
+                            viewHolder.itemView.offline.visibility = View.GONE
+                        }else {
+                            viewHolder.itemView.offline.visibility = View.VISIBLE
+                            viewHolder.itemView.online.visibility = View.GONE
+                        }
 
                         if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
                             fromName = "You"

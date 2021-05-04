@@ -59,8 +59,6 @@ class MainActivity : AppCompatActivity() {
                             .load(user.getAvatar())
                             .fit()
                             .into(binding.imageProfile)
-
-
                     }
                 }
 
@@ -69,6 +67,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+
+            val updateRef = referenceUser!!.child("User").child(currentUser!!.uid)
+
+            val map: HashMap<String, Any> = HashMap()
+            map["status"] = "online"
+            updateRef.updateChildren(map)
 
         }
 
@@ -148,5 +152,14 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_BATTERY_OPTIMIXATION) {
             checkForBatteryOptimization()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val updateRef = referenceUser!!.child("User").child(currentUser!!.uid)
+
+        val map: HashMap<String, Any> = HashMap()
+        map["status"] = "offline"
+        updateRef.updateChildren(map)
     }
 }

@@ -44,6 +44,7 @@
         android:layout_marginLeft="-16dp"
         android:layout_toEndOf="@id/image_profile"
         android:layout_toRightOf="@id/user_name"
+        android:visibility="gone"
         >
     </de.hdodenhof.circleimageview.CircleImageView>
 

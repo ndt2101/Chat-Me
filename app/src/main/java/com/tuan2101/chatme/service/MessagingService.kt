@@ -67,8 +67,6 @@ class MessagingService: FirebaseMessagingService() {
                     manager.createNotificationChannel(channel)
                 }
 
-
-
                 if (remoteMessage.data["chatLogType"].equals("single")){
                     val buider = NotificationCompat.Builder(applicationContext, "Chat Me")
                     buider.setContentTitle(remoteMessage.data["userName"])
