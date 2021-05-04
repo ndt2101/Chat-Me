@@ -26,6 +26,9 @@ import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
+import com.tuan2101.chatme.network.ApiClient
+import com.tuan2101.chatme.network.ApiService
+import com.tuan2101.chatme.viewModel.Constants
 import com.tuan2101.chatme.viewModel.Group
 import com.tuan2101.chatme.viewModel.User
 import com.vanniktech.emoji.EmojiManager
@@ -41,6 +44,11 @@ import kotlinx.android.synthetic.main.chat_from_row.view.avt
 
 import kotlinx.android.synthetic.main.image_chat_from_row.view.image_messenger
 import kotlinx.android.synthetic.main.image_chat_to_row.view.*
+import org.json.JSONArray
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class GroupChatLogActivity : AppCompatActivity() {
 
@@ -299,6 +307,9 @@ class GroupChatLogActivity : AppCompatActivity() {
                     .getReference("/User_Groups/${it.getUid()}/${groupId}")
 
                 latestMessengerForMembersReference.updateChildren(map)
+                    .addOnSuccessListener {
+                        initiateMessage("${currentUser.getName()}: ${chatMessenger.text}", (group.getMembers() as ArrayList<User>))
+                    }
             }
         }
     }
@@ -366,11 +377,13 @@ class GroupChatLogActivity : AppCompatActivity() {
 
                         map["latestMessenger"] = chatMessenger
                         latestMessengerReference.updateChildren(map)
+                            .addOnSuccessListener {
+                                initiateMessage("${currentUser.getName()}: ${chatMessenger.text}", (group.getMembers() as ArrayList<User>))
+                            }
 
                         group.getMembers().forEach {
                             val latestMessengerForMembersReference = FirebaseDatabase.getInstance()
                                 .getReference("/User_Groups/${it.getUid()}/${groupId}")
-
                             latestMessengerForMembersReference.updateChildren(map)
                         }
 
@@ -400,6 +413,77 @@ class GroupChatLogActivity : AppCompatActivity() {
         startActivityForResult(intent, 5555)
     }
 
+
+    /**
+     * gui thong bao
+     */
+
+    fun initiateMessage(messageContent: String, receivers: ArrayList<User>) {
+        try {
+
+            val tokens =  JSONArray()
+
+            val newArray = ArrayList<User>()
+
+            receivers.forEach {
+                if (!it.getUid().equals(currentUser.getUid())) {
+                    newArray.add(it)
+                }
+            }
+
+            if (receivers != null && receivers.size > 0) {
+                newArray.forEach{
+                    tokens.put(it.getToken())
+                }
+            }
+
+            val body = JSONObject()
+            val data = JSONObject()
+
+            data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_MESSAGE)
+
+            data.put("chatLogType", "group")
+            data.put("messageContent", messageContent)
+            data.put("userName", group.getName())
+            data.put("userId", group.getId())
+
+            body.put(Constants.REMOTE_MSG_DATA, data)
+            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
+
+            sendRemoteMessage(body.toString(), Constants.REMOTE_MSG_MESSAGE)
+
+
+
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    fun sendRemoteMessage(remoteMessage: String, type: String) {
+        ApiClient.getClient().create(ApiService::class.java).sendRemoteMessage(
+            Constants.getRemoteMessageHeaders(), remoteMessage
+        ).enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(this@GroupChatLogActivity, "send successfully", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    Toast.makeText(this@GroupChatLogActivity, response.message(),Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Toast.makeText(this@GroupChatLogActivity, t.message,Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+        })
+    }
+    /**
+     * ket thuc
+     */
 }
 
 

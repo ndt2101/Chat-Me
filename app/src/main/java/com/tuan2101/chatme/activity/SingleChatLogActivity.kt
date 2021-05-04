@@ -23,6 +23,9 @@ import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
+import com.tuan2101.chatme.network.ApiClient
+import com.tuan2101.chatme.network.ApiService
+import com.tuan2101.chatme.viewModel.Constants
 import com.tuan2101.chatme.viewModel.User
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
@@ -35,6 +38,13 @@ import kotlinx.android.synthetic.main.chat_from_row.view.avt
 import kotlinx.android.synthetic.main.image_chat_from_row.view.*
 import kotlinx.android.synthetic.main.image_chat_from_row.view.image_messenger
 import kotlinx.android.synthetic.main.image_chat_to_row.view.*
+import org.json.JSONArray
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SingleChatLogActivity : AppCompatActivity() {
@@ -259,14 +269,15 @@ class SingleChatLogActivity : AppCompatActivity() {
 
             val latestMessengerToReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$toId/$fromId")
             latestMessengerToReference.setValue(chatMessenger)
+                .addOnSuccessListener {
+                    initiateMessage(chatMessenger.text, user.getToken())
+                }
         }
     }
 
 
     /**
      * ham gui tin nhan len firebase
-     *
-     * URl???
      */
     private fun loadImageMessenger() {
         val toId = user.getUid()
@@ -328,6 +339,9 @@ class SingleChatLogActivity : AppCompatActivity() {
                             "latest-messenger/$toId/$fromId"
                         )
                         latestMessengerToReference.setValue(chatMessenger)
+                            .addOnSuccessListener {
+                                initiateMessage(chatMessenger.text, user.getToken())
+                            }
                     }
                     }
                 }
@@ -387,6 +401,64 @@ class SingleChatLogActivity : AppCompatActivity() {
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(intent, 1111)
     }
+
+    /**
+     * gui thong bao
+     */
+
+    fun initiateMessage(messageContent: String, receiverToken: String?) {
+        try {
+
+            val tokens =  JSONArray()
+
+            if (receiverToken != null) {
+                tokens.put(receiverToken)
+            }
+
+            val body = JSONObject()
+            val data = JSONObject()
+
+            data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_MESSAGE)
+
+            data.put("chatLogType" , "single")
+            data.put("messageContent", messageContent)
+            data.put("userName", currentUser.getName())
+            data.put("userId", currentUser.getUid())
+
+            body.put(Constants.REMOTE_MSG_DATA, data)
+            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
+
+            sendRemoteMessage(body.toString(), Constants.REMOTE_MSG_MESSAGE)
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    fun sendRemoteMessage(remoteMessage: String, type: String) {
+        ApiClient.getClient().create(ApiService::class.java).sendRemoteMessage(
+            Constants.getRemoteMessageHeaders(), remoteMessage
+        ).enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(this@SingleChatLogActivity, "send successfully", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    Toast.makeText(this@SingleChatLogActivity, response.message(),Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Toast.makeText(this@SingleChatLogActivity, t.message,Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+        })
+    }
+    /**
+     * ket thuc
+     */
 
 }
 

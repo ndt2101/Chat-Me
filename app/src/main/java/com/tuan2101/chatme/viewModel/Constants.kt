@@ -18,6 +18,8 @@ class Constants {
 
         const val REMOTE_MSG_MEETING_ROOM = "meetingRoom"
 
+        const val REMOTE_MSG_MESSAGE = "message"
+
 
 
         /**
