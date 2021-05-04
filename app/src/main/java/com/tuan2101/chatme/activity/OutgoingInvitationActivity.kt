@@ -161,8 +161,14 @@ import kotlin.collections.ArrayList
             data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION)
             data.put(Constants.REMOTE_MSG_MEETING_TYPE, meetingType)
 
-            data.put("userAvt", currentUser.getAvatar())
-            data.put("userName", currentUser.getName())
+            if(intent.getBooleanExtra("isMultiple", false)) {
+                data.put("userAvt", intent.getStringExtra("groupAvt"))
+                data.put("userName", intent.getStringExtra("groupName"))
+            }
+            else {
+                data.put("userAvt", currentUser.getAvatar())
+                data.put("userName", currentUser.getName())
+            }
             data.put(Constants.REMOTE_MSG_INVITER_TOKEN, inviterToken)
 
             meetingRoom = "${currentUser.getUid()}_${UUID.randomUUID().toString().substring(0, 5)}"

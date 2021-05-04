@@ -260,9 +260,6 @@ class SingleChatLogActivity : AppCompatActivity() {
             val latestMessengerToReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$toId/$fromId")
             latestMessengerToReference.setValue(chatMessenger)
         }
-
-
-
     }
 
 
