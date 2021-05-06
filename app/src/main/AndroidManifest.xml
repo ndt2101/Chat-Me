@@ -16,11 +16,13 @@
         android:theme="@style/Theme.ChatMe"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".activity.ImageActivity"></activity>
         <activity
             android:name=".activity.OutgoingInvitationActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.IncomingInvitationActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.IncomingInvitationActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.CreateGroupChatActivity" />
         <activity android:name=".activity.InfoActivity" />
         <activity android:name=".activity.SingleChatLogActivity" />
@@ -28,6 +30,7 @@
         <activity android:name=".activity.SearchActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.EditGroupActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

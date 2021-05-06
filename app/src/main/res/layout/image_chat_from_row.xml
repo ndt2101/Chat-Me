@@ -32,4 +32,14 @@
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"/>
 
+    <TextView
+        android:id="@+id/time_of_chat_image_from_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="10:00"
+        android:paddingStart="15dp"
+        app:layout_constraintStart_toStartOf="@id/image_messenger"
+        app:layout_constraintTop_toBottomOf="@id/image_messenger" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

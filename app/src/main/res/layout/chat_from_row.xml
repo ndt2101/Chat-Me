@@ -31,4 +31,15 @@
         app:layout_constraintStart_toEndOf="@+id/avt"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/time_of_chat_from_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="10:00"
+        android:paddingStart="15dp"
+        app:layout_constraintStart_toStartOf="@id/messenger"
+        app:layout_constraintTop_toBottomOf="@id/messenger"
+        android:visibility="gone"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

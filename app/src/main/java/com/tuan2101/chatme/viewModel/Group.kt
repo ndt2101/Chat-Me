@@ -9,11 +9,12 @@ class Group(private var name: String,
             private var avt: String,
             private var createTime: Long,
             private var members: List<User>,
-            private var latestMessenger: GroupChatMessenger
+            private var latestMessenger: GroupChatMessenger,
+            private var adminId: String
 ) : Serializable {
 
 
-    constructor() : this("","","",-1,ArrayList(), GroupChatMessenger())
+    constructor() : this("","","",-1,ArrayList(), GroupChatMessenger(),"")
 
     fun getId(): String {
         return this.id
@@ -57,6 +58,14 @@ class Group(private var name: String,
 
     fun setLatestMessenger(latestMessenger: GroupChatMessenger) {
         this.latestMessenger = latestMessenger
+    }
+
+    fun getAdminId(): String {
+        return this.adminId
+    }
+
+    fun setAdminId(adminId: String) {
+        this.adminId = adminId
     }
 
 }

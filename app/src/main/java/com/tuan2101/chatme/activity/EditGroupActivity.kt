@@ -3,11 +3,13 @@ package com.tuan2101.chatme.activity
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -23,83 +25,93 @@ import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.adapter.SearchUserToAddAdapter
 import com.tuan2101.chatme.databinding.ActivityCreateGroupChatBinding
-import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.viewModel.Group
 import com.tuan2101.chatme.viewModel.User
-import kotlinx.android.synthetic.main.image_chat_from_row.view.*
-import kotlin.collections.ArrayList
 
-class CreateGroupChatActivity : AppCompatActivity() {
+class EditGroupActivity : AppCompatActivity()  {
 
-    lateinit var binding: ActivityCreateGroupChatBinding
     lateinit var adapter: SearchUserToAddAdapter
+    lateinit var binding: ActivityCreateGroupChatBinding
+    lateinit var group: Group
     lateinit var users: List<User>
     lateinit var groupMembers: MutableLiveData<List<User>>
     lateinit var groupMembersClone: List<User>
-    private val _requestCode = 2222
+    lateinit var currentUser: User
+
+    private val _requestCode = 8888
     var imageUri: Uri? = null
     var url: String = ""
     lateinit var userReference: DatabaseReference
-    lateinit var currentUser: User
-    var group: Group? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var listMemberName: String = ""
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_group_chat)
 
+        group = intent.getSerializableExtra("group") as Group
 
-        binding.searchList.setHasFixedSize(true)
+        Picasso.get().load(group.getAvt()).into(binding.setGroupAvt)
+        binding.setGroupName.setText(group.getName())
+
         binding.searchList.layoutManager = LinearLayoutManager(applicationContext) //context
 
         users = ArrayList()
         groupMembers = MutableLiveData()
-        groupMembersClone = ArrayList()
+        groupMembersClone = group.getMembers()
 
 
-        retrieveAllUser()
-
-        binding.search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchForUser(s.toString().toLowerCase())
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-        })
-
-        binding.setGroupAvt.setOnClickListener {
-            setImage()
+        groupMembersClone.forEach {
+            listMemberName += "${it.getName()}, "
         }
 
-        binding.createButton.setOnClickListener {
-            createGroup()
-            navigateToGroupChatLogActivity()
-        }
+        binding.listMembers.text = listMemberName
 
-        /**
-         * get current user
-         */
-        FirebaseDatabase.getInstance().reference.child("User")
-            .child(FirebaseAuth.getInstance().currentUser.uid).addValueEventListener(object :
-                ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        currentUser = snapshot.getValue(User::class.java)!!
-                        (groupMembersClone as ArrayList<User>).add(currentUser)
-                        binding.listMembers.text = currentUser.getName()
-                    }
+        if (FirebaseAuth.getInstance().uid.equals(group.getAdminId())){
+            binding.createButton.text = "Update"
+            retrieveAllUser()
+
+            binding.search.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
                 }
 
-                override fun onCancelled(error: DatabaseError) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    searchForUser(s.toString().toLowerCase())
+                }
+
+                override fun afterTextChanged(s: Editable?) {
 
                 }
             })
+
+            binding.setGroupAvt.setOnClickListener {
+                setImage()
+            }
+
+            binding.createButton.setOnClickListener {
+                updateGroup()
+                navigateToGroupChatLogActivity()
+            }
+        }else {
+            binding.editGroup.visibility = View.GONE
+            binding.setGroupName.visibility = View.GONE
+            binding.groupName.visibility = View.VISIBLE
+            binding.groupName.text = group.getName()
+            binding.search.visibility = View.GONE
+
+            adapter = SearchUserToAddAdapter(
+                applicationContext,
+                groupMembersClone, groupMembers,
+                groupMembersClone
+            )
+
+            binding.searchList.adapter = adapter
+
+            binding.createButton.visibility = View.GONE
+        }
+
     }
+
 
     private fun retrieveAllUser() {
         var firebaseUserID = FirebaseAuth.getInstance().currentUser.uid
@@ -125,7 +137,7 @@ class CreateGroupChatActivity : AppCompatActivity() {
 
                     binding.searchList.adapter = adapter
 
-                    adapter.groupMembers.observe(this@CreateGroupChatActivity, Observer{
+                    adapter.groupMembers.observe(this@EditGroupActivity , Observer{
                         var membersName = ""
                         adapter.groupMembers.value!!.forEach {
                             membersName += "${it.getName()}, "
@@ -142,7 +154,6 @@ class CreateGroupChatActivity : AppCompatActivity() {
             }
         })
     }
-
 
     private fun searchForUser(str: String) {
         var firebaseUserID = FirebaseAuth.getInstance().currentUser.uid
@@ -175,62 +186,34 @@ class CreateGroupChatActivity : AppCompatActivity() {
         })
     }
 
+
+
+
     fun navigateToGroupChatLogActivity() {
         if (group != null){
-            val intent = Intent(this@CreateGroupChatActivity, GroupChatLogActivity::class.java)
+            val intent = Intent(this@EditGroupActivity,MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent.putExtra("group", group)
             startActivity(intent)
             finish()
         }
     }
 
-    fun createGroup() {
-        val reference = FirebaseDatabase.getInstance().getReference("/Groups").push()
+    fun updateGroup() {
+        val reference = FirebaseDatabase.getInstance().getReference("/Groups").child(group.getId())
 
         val groupName: String = binding.setGroupName.text.toString()
 
         if (groupName.isNotEmpty() && groupMembers.value!!.isNotEmpty() && url.isNotEmpty()) {
+            val map = HashMap<String, Any>()
+            map["avt"] = url
+            map["name"] = binding.setGroupName.text.toString()
+            map["members"] = groupMembers.value!!
 
-                group = Group(
-                groupName,
-                reference.key!!,
-                url,
-                System.currentTimeMillis() / 1000,
-                groupMembers.value!!, GroupChatMessenger(
-                        reference.key!!,
-                        "Now you can chat with each others in group",
-                        currentUser.getUid(),
-                        reference.key!!,
-                        System.currentTimeMillis() / 1000,
-                        groupName,
-                        "text",
-                        "",
-                        url
-                ),
-                currentUser.getUid()
-            )
-
-            reference.setValue(group)
+            reference.updateChildren(map)
                 .addOnSuccessListener {
-                    Toast.makeText(applicationContext, "Create group successfully", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "Update successfully", Toast.LENGTH_SHORT).show()
                 }
 
-
-            /**
-             * them truong groups cho tung user co trong group
-             */
-
-
-            /**
-             * can xem lai phan nay
-             */
-
-            group!!.getMembers().forEach {
-                    userReference = FirebaseDatabase.getInstance().reference.child("User_Groups")
-                        .child(it.getUid()).child("${group!!.getId()}")
-                    userReference.setValue(group)
-                }
         }
         else {
             Toast.makeText(applicationContext, "Group name, members list, group avatar must be set", Toast.LENGTH_SHORT).show()
@@ -284,7 +267,7 @@ class CreateGroupChatActivity : AppCompatActivity() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(intent, 2222)
+        startActivityForResult(intent, 8888)
     }
 
 }

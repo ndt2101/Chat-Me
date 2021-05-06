@@ -18,6 +18,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/edit_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/set_group_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Edit"
+            android:textSize="20sp"
+            android:padding="2dp"
+            android:textColor="@color/violet"
+            android:visibility="gone"
+            />
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/set_group_name"
             android:layout_width="280dp"
@@ -27,7 +41,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.542"
             app:layout_constraintStart_toEndOf="@+id/set_group_avt"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/group_name"
+            android:layout_width="280dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="28dp"
+            android:hint="Group name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.542"
+            app:layout_constraintStart_toEndOf="@+id/set_group_avt"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="20sp"
+            android:paddingTop="10dp"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            />
 
         <EditText
             android:id="@+id/search"
@@ -42,7 +73,6 @@
             android:maxLines="1"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/set_group_avt" />
 

@@ -31,8 +31,10 @@ class SearchUserAdapter(
 
         if (user.getStatus().equals("online")) {
             holder.binding.online.visibility = View.VISIBLE
+            holder.binding.offline.visibility = View.GONE
         }else {
             holder.binding.offline.visibility = View.VISIBLE
+            holder.binding.online.visibility = View.GONE
         }
     }
 

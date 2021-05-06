@@ -46,7 +46,7 @@ class SearchActivity : AppCompatActivity() {
              }
 
              override fun afterTextChanged(s: Editable?) {
-                 
+
              }
          })
     }
@@ -89,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
             .startAt(str)
             .endAt(str + "\uf8ff")
 
-        queryUsers.addValueEventListener(object: ValueEventListener {
+        queryUsers.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 (users as ArrayList<User>).clear()
 

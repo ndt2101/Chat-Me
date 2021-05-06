@@ -14,7 +14,8 @@
         android:layout_marginEnd="4dp"
         android:src="@drawable/huan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <com.vanniktech.emoji.EmojiTextView
         android:id="@+id/messenger"
@@ -29,5 +30,16 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/avt"
         app:layout_constraintTop_toTopOf="@+id/avt" />
+
+    <TextView
+        android:id="@+id/time_of_chat_to_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="10:00"
+        android:paddingEnd="15dp"
+        app:layout_constraintEnd_toEndOf="@id/messenger"
+        app:layout_constraintTop_toBottomOf="@id/messenger"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

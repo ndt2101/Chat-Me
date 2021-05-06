@@ -1,6 +1,8 @@
 package com.tuan2101.chatme.activity
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -35,16 +37,21 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_from_row.view.avt
+import kotlinx.android.synthetic.main.chat_from_row.view.messenger
+import kotlinx.android.synthetic.main.chat_to_row.view.*
+import kotlinx.android.synthetic.main.chat_to_row.view.time_of_chat_to_row
 import kotlinx.android.synthetic.main.image_chat_from_row.view.*
 import kotlinx.android.synthetic.main.image_chat_from_row.view.image_messenger
+import kotlinx.android.synthetic.main.image_chat_from_row.view.time_of_chat_image_from_row
 import kotlinx.android.synthetic.main.image_chat_to_row.view.*
+import kotlinx.android.synthetic.main.image_chat_to_row.view.time_of_chat_image_to_row
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class SingleChatLogActivity : AppCompatActivity() {
@@ -195,9 +202,9 @@ class SingleChatLogActivity : AppCompatActivity() {
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
                 } else if (chatMessenger != null && chatMessenger.type.equals("image")) {
                     if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
-                        adapter.add(ChatImageToItem(chatMessenger, currentUser))
+                        adapter.add(ChatImageToItem(chatMessenger, currentUser, this@SingleChatLogActivity))
                     } else {
-                        adapter.add(ChatImageFromRow(chatMessenger, user))
+                        adapter.add(ChatImageFromRow(chatMessenger, user, this@SingleChatLogActivity))
                     }
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
                 }
@@ -356,7 +363,7 @@ class SingleChatLogActivity : AppCompatActivity() {
     fun navigateToOutGoingActivity(type: String) {
         val intent = Intent(this@SingleChatLogActivity, OutgoingInvitationActivity::class.java)
         intent.putExtra("user", user)
-        intent.putExtra("type",type)
+        intent.putExtra("type", type)
         startActivity(intent)
         finish()
     }
@@ -367,19 +374,35 @@ class SingleChatLogActivity : AppCompatActivity() {
      */
     fun makeVideoCall() {
         if (user.getToken() != "") {
-            Toast.makeText(applicationContext, "Video call to ${user.getName()}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                applicationContext,
+                "Video call to ${user.getName()}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         else{
-            Toast.makeText(applicationContext, "${user.getName()} is not signing in any device", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                applicationContext,
+                "${user.getName()} is not signing in any device",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     fun makeVoiceCall() {
         if (user.getToken() != "") {
-            Toast.makeText(applicationContext, "Voice call to ${user.getName()}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                applicationContext,
+                "Voice call to ${user.getName()}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         else{
-            Toast.makeText(applicationContext, "${user.getName()} is not signing in any device", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                applicationContext,
+                "${user.getName()} is not signing in any device",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -420,7 +443,7 @@ class SingleChatLogActivity : AppCompatActivity() {
 
             data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_MESSAGE)
 
-            data.put("chatLogType" , "single")
+            data.put("chatLogType", "single")
             data.put("messageContent", messageContent)
             data.put("userName", currentUser.getName())
             data.put("userId", currentUser.getUid())
@@ -441,16 +464,23 @@ class SingleChatLogActivity : AppCompatActivity() {
         ).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@SingleChatLogActivity, "send successfully", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    Toast.makeText(this@SingleChatLogActivity, response.message(),Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SingleChatLogActivity,
+                        "send successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        this@SingleChatLogActivity,
+                        response.message(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 }
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
-                Toast.makeText(this@SingleChatLogActivity, t.message,Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SingleChatLogActivity, t.message, Toast.LENGTH_SHORT).show()
                 finish()
             }
 
@@ -460,12 +490,34 @@ class SingleChatLogActivity : AppCompatActivity() {
      * ket thuc
      */
 
+    fun navigateToImageActivity(url: String) {
+        val intent = Intent(this@SingleChatLogActivity, ImageActivity::class.java)
+        intent.putExtra("image", url)
+        startActivity(intent)
+        finish()
+    }
+
 }
 
 class ChatTextFromItem(val chatMessenger: ChatMessenger, val user: User): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        var clicked = false
         viewHolder.itemView.messenger.text = chatMessenger.text.trim()
         Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt)
+        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val date = Date(chatMessenger.timeStamp * 1000)
+        val time = simpleDateFormat.format(date)
+
+        viewHolder.itemView.setOnClickListener {
+            if (!clicked){
+                viewHolder.itemView.time_of_chat_from_row.visibility = View.VISIBLE
+                clicked = true}
+            else {
+                clicked = false
+                viewHolder.itemView.time_of_chat_from_row.visibility = View.GONE
+            }
+            viewHolder.itemView.time_of_chat_from_row.text = time
+        }
 
     }
 
@@ -476,8 +528,24 @@ class ChatTextFromItem(val chatMessenger: ChatMessenger, val user: User): Item<V
 
 class ChatTextToItem(val chatMessenger: ChatMessenger, val currentUser: User): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        var clicked = false
         viewHolder.itemView.messenger.text = chatMessenger.text.trim()
         Picasso.get().load(currentUser.getAvatar()).into(viewHolder.itemView.avt)
+
+        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val date = Date(chatMessenger.timeStamp * 1000)
+        val time = simpleDateFormat.format(date)
+
+        viewHolder.itemView.setOnClickListener {
+            if (!clicked){
+                viewHolder.itemView.time_of_chat_to_row.visibility = View.VISIBLE
+                clicked = true}
+            else {
+                clicked = false
+                viewHolder.itemView.time_of_chat_to_row.visibility = View.GONE
+            }
+            viewHolder.itemView.time_of_chat_to_row.text = time
+        }
     }
 
     override fun getLayout(): Int {
@@ -486,10 +554,21 @@ class ChatTextToItem(val chatMessenger: ChatMessenger, val currentUser: User): I
 
 }
 
-class ChatImageFromRow(val chatMessenger: ChatMessenger, val user: User): Item<ViewHolder>() {
+class ChatImageFromRow(val chatMessenger: ChatMessenger, val user: User, val activity: SingleChatLogActivity): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt)
         Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger)
+
+        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val date = Date(chatMessenger.timeStamp * 1000)
+        val time = simpleDateFormat.format(date)
+
+        viewHolder.itemView.time_of_chat_image_from_row.text = time
+
+        viewHolder.itemView.setOnClickListener {
+            activity.navigateToImageActivity(chatMessenger.img)
+        }
+
 
     }
 
@@ -498,10 +577,20 @@ class ChatImageFromRow(val chatMessenger: ChatMessenger, val user: User): Item<V
     }
 }
 
-class ChatImageToItem(val chatMessenger: ChatMessenger, val currentUser: User): Item<ViewHolder>() {
+class ChatImageToItem(val chatMessenger: ChatMessenger, val currentUser: User, val activity: SingleChatLogActivity): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         Picasso.get().load(currentUser.getAvatar()).into(viewHolder.itemView.avt)
         Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger)
+
+        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val date = Date(chatMessenger.timeStamp * 1000)
+        val time = simpleDateFormat.format(date)
+
+        viewHolder.itemView.time_of_chat_image_to_row.text = time
+
+        viewHolder.itemView.setOnClickListener {
+            activity.navigateToImageActivity(chatMessenger.img)
+        }
     }
 
     override fun getLayout(): Int {
