@@ -508,7 +508,7 @@ class ChatTextFromItemInGroup(val chatMessenger: GroupChatMessenger): Item<ViewH
         viewHolder.itemView.user_name_chat_from_row.text = chatMessenger.fromName
         viewHolder.itemView.user_name_chat_from_row.visibility = View.VISIBLE
         Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt_from_row)
-        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy 'at' hh:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
         val time = simpleDateFormat.format(date)
 
@@ -537,7 +537,7 @@ class ChatTextToItemInGroup(val chatMessenger: GroupChatMessenger): Item<ViewHol
         viewHolder.itemView.messenger_to_row.text = chatMessenger.text.trim()
         Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt_chat_to_row)
 
-        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy 'at' hh:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
         val time = simpleDateFormat.format(date)
 

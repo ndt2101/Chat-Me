@@ -501,7 +501,7 @@ class ChatTextFromItem(val chatMessenger: ChatMessenger, val user: User): Item<V
         var clicked = false
         viewHolder.itemView.messenger_from_row.text = chatMessenger.text.trim()
         Picasso.get().load(user.getAvatar()).into(viewHolder.itemView.avt_from_row)
-        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy 'at' hh:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
         val time = simpleDateFormat.format(date)
 
@@ -529,7 +529,7 @@ class ChatTextToItem(val chatMessenger: ChatMessenger, val currentUser: User): I
         viewHolder.itemView.messenger_to_row.text = chatMessenger.text.trim()
         Picasso.get().load(currentUser.getAvatar()).into(viewHolder.itemView.avt_chat_to_row)
 
-        val simpleDateFormat = SimpleDateFormat("h:mm a")
+        val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy 'at' hh:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
         val time = simpleDateFormat.format(date)
 
