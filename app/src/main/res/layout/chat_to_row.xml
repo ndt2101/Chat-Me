@@ -6,30 +6,44 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp">
 
+    <TextView
+        android:id="@+id/separate_day_chat_to_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="21/10/2001"
+        android:padding="3dp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        />
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avt"
+        android:id="@+id/avt_chat_to_row"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:src="@drawable/huan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/separate_day_chat_to_row"
         android:visibility="gone"/>
 
     <com.vanniktech.emoji.EmojiTextView
-        android:id="@+id/messenger"
+        android:id="@+id/messenger_to_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/text_to_row_style"
         android:maxWidth="265dp"
         android:padding="15dp"
         android:text="A the a"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/avt"
-        app:layout_constraintTop_toTopOf="@+id/avt" />
+        app:layout_constraintEnd_toStartOf="@+id/avt_chat_to_row"
+        app:layout_constraintTop_toTopOf="@+id/avt_chat_to_row" />
 
     <TextView
         android:id="@+id/time_of_chat_to_row"
@@ -38,8 +52,8 @@
         android:layout_marginTop="1dp"
         android:text="10:00"
         android:paddingEnd="15dp"
-        app:layout_constraintEnd_toEndOf="@id/messenger"
-        app:layout_constraintTop_toBottomOf="@id/messenger"
+        app:layout_constraintEnd_toEndOf="@id/messenger_to_row"
+        app:layout_constraintTop_toBottomOf="@id/messenger_to_row"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

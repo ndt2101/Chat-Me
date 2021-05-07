@@ -6,30 +6,57 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp">
 
+    <TextView
+        android:id="@+id/separate_day_chat_from_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="21/10/2001"
+        android:padding="3dp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/user_name_chat_from_row"
+        android:layout_width="245dp"
+        android:layout_height="20dp"
+        app:layout_constraintTop_toBottomOf="@id/separate_day_chat_from_row"
+        app:layout_constraintStart_toEndOf="@id/avt_from_row"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:text="Ngo Ba Kha"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:visibility="gone"
+        />
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/avt"
+        android:id="@+id/avt_from_row"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/kha_banh"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/user_name_chat_from_row" />
 
     <com.vanniktech.emoji.EmojiTextView
-        android:id="@+id/messenger"
+        android:id="@+id/messenger_from_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="1dp"
         android:background="@drawable/text_from_row_style"
         android:maxWidth="265dp"
         android:padding="15dp"
         android:text="Khong lam ma doi co an thi chi co an db an c"
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/avt"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/avt_from_row"
+        app:layout_constraintTop_toBottomOf="@id/user_name_chat_from_row" />
 
     <TextView
         android:id="@+id/time_of_chat_from_row"
@@ -38,8 +65,8 @@
         android:layout_marginTop="1dp"
         android:text="10:00"
         android:paddingStart="15dp"
-        app:layout_constraintStart_toStartOf="@id/messenger"
-        app:layout_constraintTop_toBottomOf="@id/messenger"
+        app:layout_constraintStart_toStartOf="@id/messenger_from_row"
+        app:layout_constraintTop_toBottomOf="@id/messenger_from_row"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

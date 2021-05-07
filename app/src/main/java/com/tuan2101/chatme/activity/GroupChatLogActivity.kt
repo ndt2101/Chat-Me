@@ -39,12 +39,7 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.image_chat_from_row.view.*
-
-import kotlinx.android.synthetic.main.chat_from_row.view.avt
-import kotlinx.android.synthetic.main.chat_from_row.view.messenger
 import kotlinx.android.synthetic.main.chat_to_row.view.*
-
-import kotlinx.android.synthetic.main.image_chat_from_row.view.image_messenger
 import kotlinx.android.synthetic.main.image_chat_to_row.view.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -509,13 +504,15 @@ class GroupChatLogActivity : AppCompatActivity() {
 class ChatTextFromItemInGroup(val chatMessenger: GroupChatMessenger): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         var clicked = false
-        viewHolder.itemView.messenger.text = chatMessenger.text.trim()
-        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt)
+        viewHolder.itemView.messenger_from_row.text = chatMessenger.text.trim()
+        viewHolder.itemView.user_name_chat_from_row.text = chatMessenger.fromName
+        viewHolder.itemView.user_name_chat_from_row.visibility = View.VISIBLE
+        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt_from_row)
         val simpleDateFormat = SimpleDateFormat("h:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
         val time = simpleDateFormat.format(date)
 
-        viewHolder.itemView.setOnClickListener {
+        viewHolder.itemView.messenger_from_row.setOnClickListener {
             if (!clicked){
                 viewHolder.itemView.time_of_chat_from_row.visibility = View.VISIBLE
                 clicked = true}
@@ -537,14 +534,14 @@ class ChatTextFromItemInGroup(val chatMessenger: GroupChatMessenger): Item<ViewH
 class ChatTextToItemInGroup(val chatMessenger: GroupChatMessenger): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         var clicked = false
-        viewHolder.itemView.messenger.text = chatMessenger.text.trim()
-        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt)
+        viewHolder.itemView.messenger_to_row.text = chatMessenger.text.trim()
+        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt_chat_to_row)
 
         val simpleDateFormat = SimpleDateFormat("h:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
         val time = simpleDateFormat.format(date)
 
-        viewHolder.itemView.setOnClickListener {
+        viewHolder.itemView.messenger_to_row.setOnClickListener {
             if (!clicked){
                 viewHolder.itemView.time_of_chat_to_row.visibility = View.VISIBLE
                 clicked = true}
@@ -564,8 +561,10 @@ class ChatTextToItemInGroup(val chatMessenger: GroupChatMessenger): Item<ViewHol
 
 class ChatImageFromRowInGroup(val chatMessenger: GroupChatMessenger, val activity: GroupChatLogActivity): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt)
-        Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger)
+        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt_image_from_row)
+        Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger_from_row)
+        viewHolder.itemView.user_name_image.text = chatMessenger.fromName
+        viewHolder.itemView.user_name_image.visibility = View.VISIBLE
 
         val simpleDateFormat = SimpleDateFormat("h:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
@@ -573,7 +572,7 @@ class ChatImageFromRowInGroup(val chatMessenger: GroupChatMessenger, val activit
 
         viewHolder.itemView.time_of_chat_image_from_row.text = time
 
-        viewHolder.itemView.setOnClickListener {
+        viewHolder.itemView.image_messenger_from_row.setOnClickListener {
             activity.navigateToImageActivity(chatMessenger.img)
         }
 
@@ -586,8 +585,8 @@ class ChatImageFromRowInGroup(val chatMessenger: GroupChatMessenger, val activit
 
 class ChatImageToItemInGroup(val chatMessenger: GroupChatMessenger, val activity: GroupChatLogActivity): Item<ViewHolder>() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt)
-        Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger)
+        Picasso.get().load(chatMessenger.fromUserAvt).into(viewHolder.itemView.avt_image_to_row)
+        Picasso.get().load((chatMessenger.img)).into(viewHolder.itemView.image_messenger_to_row)
 
         val simpleDateFormat = SimpleDateFormat("h:mm a")
         val date = Date(chatMessenger.timeStamp * 1000)
@@ -595,7 +594,7 @@ class ChatImageToItemInGroup(val chatMessenger: GroupChatMessenger, val activity
 
         viewHolder.itemView.time_of_chat_image_to_row.text = time
 
-        viewHolder.itemView.setOnClickListener {
+        viewHolder.itemView.image_messenger_to_row.setOnClickListener {
             activity.navigateToImageActivity(chatMessenger.img)
         }
     }
