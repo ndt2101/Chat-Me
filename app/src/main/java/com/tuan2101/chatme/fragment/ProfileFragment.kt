@@ -5,11 +5,14 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -24,6 +27,7 @@ import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.FragmentProfileBinding
 import com.tuan2101.chatme.viewModel.User
+import com.tuan2101.chatme.viewModel.hideKeyboard
 
 
 class ProfileFragment : Fragment() {
@@ -35,11 +39,17 @@ class ProfileFragment : Fragment() {
     var imageUri: Uri? = null // de put anh len firebase
     lateinit var storageRef: StorageReference
     lateinit var clickCheck: String
+    var userNameText: String = ""
+    var nickName: String = ""
+    var workText: String = ""
+    var homeTownText: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
 
@@ -53,16 +63,21 @@ class ProfileFragment : Fragment() {
                     val user: User? = snapshot.getValue(User::class.java)
 
                     if (context != null) {
-                        binding.userName.text = user!!.getName().trim()
+                        binding.userName.setText(user!!.getName().trim())
                         Picasso.get().load(user.getAvatar()).into(binding.avt)
                         Picasso.get().load(user.getCoverImage()).into(binding.coverImage)
-                        binding.introduce.text = user!!.getIntroduceYourself()
-                        binding.work.text = "Work at ${user!!.getWork()}"
-                        binding.homeTown.text = "From ${user!!.getHomeTown()}"
+                        binding.introduce.setText(user.getIntroduceYourself())
+                        binding.work.setText( "Work at ${user!!.getWork()}")
+                        binding.homeTown.setText("From ${user!!.getHomeTown()}")
+
+
+                        userNameText = user.getName().trim()
+                        nickName = user.getIntroduceYourself()
+                        workText = "Work at ${user!!.getWork()}"
+                        homeTownText = "From ${user!!.getHomeTown()}"
                     }
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -80,14 +95,95 @@ class ProfileFragment : Fragment() {
             setImage()
         }
 
+        binding.userName.setOnClickListener {
+            clickToEdit()
+        }
+
+        binding.introduce.setOnClickListener {
+            clickToEdit()
+        }
+
+        binding.work.setOnClickListener {
+            clickToEdit()
+        }
+
+        binding.homeTown.setOnClickListener {
+            clickToEdit()
+        }
+
+        binding.update.setOnClickListener {
+            if (binding.userNameEdit.text.toString().isNotEmpty()) {
+                var updateMap = HashMap<String, Any>()
+                updateMap["name"] = binding.userNameEdit.text.toString()
+                userReference.updateChildren(updateMap)
+            }
+
+            if (binding.introduceEdit.text.toString().isNotEmpty()) {
+                var updateMap = HashMap<String, Any>()
+                updateMap["introduceYourself"] = binding.introduceEdit.text.toString()
+                userReference.updateChildren(updateMap)
+            }
+
+            if (binding.workEdit.text.toString().isNotEmpty()) {
+                var updateMap = HashMap<String, Any>()
+                updateMap["work"] = binding.workEdit.text.toString()
+                userReference.updateChildren(updateMap)
+            }
+
+            if (binding.homeTownEdit.text.toString().isNotEmpty()) {
+                var updateMap = HashMap<String, Any>()
+                updateMap["homeTown"] = binding.homeTownEdit.text.toString()
+                userReference.updateChildren(updateMap)
+            }
+
+            context?.hideKeyboard(binding.update)
+            doneUpdate()
+        }
+
         return binding.root
     }
+
 
     private fun setImage() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(intent, 2101)
+    }
+
+    fun clickToEdit() {
+
+        binding.userName.visibility = View.GONE
+        binding.userNameEdit.visibility = View.VISIBLE
+        binding.introduce.visibility = View.GONE
+        binding.introduceEdit.visibility = View.VISIBLE
+        binding.work.visibility = View.GONE
+        binding.workEdit.visibility = View.VISIBLE
+        binding.homeTown.visibility = View.GONE
+        binding.homeTownEdit.visibility = View.VISIBLE
+
+        binding.userNameEdit.setText(binding.userName.text)
+        binding.introduceEdit.setText(binding.introduce.text)
+        binding.workEdit.setText(binding.work.text.substring(8))
+        binding.homeTownEdit.setText(binding.homeTown.text.substring(5))
+
+        binding.update.visibility = View.VISIBLE
+
+    }
+
+    fun doneUpdate() {
+
+        binding.userName.visibility = View.VISIBLE
+        binding.userNameEdit.visibility = View.GONE
+        binding.introduce.visibility = View.VISIBLE
+        binding.introduceEdit.visibility = View.GONE
+        binding.work.visibility = View.VISIBLE
+        binding.workEdit.visibility = View.GONE
+        binding.homeTown.visibility = View.VISIBLE
+        binding.homeTownEdit.visibility = View.GONE
+
+        binding.update.visibility = View.GONE
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

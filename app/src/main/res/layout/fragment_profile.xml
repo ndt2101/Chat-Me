@@ -2,13 +2,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="30dp"
     tools:context=".fragment.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cv1"
         android:layout_width="match_parent"
@@ -43,11 +50,10 @@
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/user_name"
+    <EditText
+        android:id="@+id/user_name_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Name"
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -57,65 +63,147 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:textAlignment="center"
+        android:visibility="gone"
+        >
+    </EditText>
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_below="@id/cv1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"
+        tools:text="text"
         >
     </TextView>
+
+    <EditText
+        android:id="@+id/introduce_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_below="@id/user_name_edit"
+        android:layout_marginTop="45dp"
+        android:textAlignment="center"
+        android:drawableLeft="@drawable/ic_baseline_auto_story"
+        android:drawablePadding="15dp"
+        android:drawableTint="@color/violet"
+        android:visibility="gone"
+        >
+    </EditText>
 
     <TextView
         android:id="@+id/introduce"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stoty"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:layout_below="@id/user_name"
         android:layout_marginTop="45dp"
         android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_auto_story"
         android:drawablePadding="15dp"
         android:drawableTint="@color/violet"
+        tools:text="text"
         >
     </TextView>
+
+    <EditText
+        android:id="@+id/work_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_below="@id/introduce_edit"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:drawableLeft="@drawable/ic_baseline_work"
+        android:drawablePadding="15dp"
+        android:drawableTint="@color/violet"
+        android:visibility="gone"
+        >
+    </EditText>
 
     <TextView
         android:id="@+id/work"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Work"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:layout_below="@id/introduce"
         android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_work"
         android:drawablePadding="15dp"
         android:drawableTint="@color/violet"
+        tools:text="text"
         >
     </TextView>
+
+    <EditText
+        android:id="@+id/home_town_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_below="@id/work_edit"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:drawableLeft="@drawable/ic_baseline_home"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/violet"
+        android:visibility="gone"
+        >
+    </EditText>
 
     <TextView
         android:id="@+id/home_town"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Town"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:layout_below="@id/work"
         android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_home"
         android:drawablePadding="5dp"
         android:drawableTint="@color/violet"
+        tools:text="text"
         >
     </TextView>
 
+    <Button
+        android:id="@+id/update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/home_town_edit"
+        android:layout_alignStart="@+id/cv1"
+        android:layout_alignEnd="@+id/cv1"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="120dp"
+        android:background="@drawable/button_style"
+        android:gravity="center"
+        android:text="Update"
+        android:padding="5dp"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:visibility="gone"/>
 </RelativeLayout>
+
+    </ScrollView>
 </layout>

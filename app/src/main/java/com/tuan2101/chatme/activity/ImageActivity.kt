@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,6 +28,9 @@ class ImageActivity : AppCompatActivity() {
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
     )
+
+    private var scaleGestureDetector: ScaleGestureDetector? = null
+    private var mScaleFactor = 2.0f
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +67,12 @@ class ImageActivity : AppCompatActivity() {
             }
         }
 
+        scaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
+    }
 
+    override fun onTouchEvent(motionEvent: MotionEvent?): Boolean {
+        scaleGestureDetector!!.onTouchEvent(motionEvent)
+        return true
     }
 
     private fun checkPermissions(): Boolean {
@@ -93,6 +103,16 @@ class ImageActivity : AppCompatActivity() {
                 Toast.makeText(this, "permission", Toast.LENGTH_SHORT).show()
             }
             return
+        }
+    }
+
+    inner class ScaleListener: ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(scaleGestureDetector: ScaleGestureDetector ): Boolean {
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            mScaleFactor = 0.1f.coerceAtLeast(mScaleFactor.coerceAtMost(10.0f));
+            binding.image.scaleX = mScaleFactor;
+            binding.image.scaleY = mScaleFactor;
+            return true;
         }
     }
 }

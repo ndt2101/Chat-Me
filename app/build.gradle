@@ -65,6 +65,7 @@ dependencies {
     implementation 'com.vanniktech:emoji-ios:0.7.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }
+    implementation 'com.commit451:PhotoView:1.2.4'
 
 
     testImplementation 'junit:junit:4.+'

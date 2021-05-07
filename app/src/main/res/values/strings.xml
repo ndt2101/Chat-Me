@@ -14,7 +14,7 @@
     <string name="sign_up">Sign up</string>
     <string name="error_email">Email address must be of the form example@gmail.com</string>
     <string name="user_name">User name</string>
-    <string name="introduce_yourself">Introduce Yourself</string>
+    <string name="introduce_yourself">Nick Name</string>
     <string name="work">Work</string>
     <string name="home_town">Home Town</string>
     <string name="chat_here">Chat here</string>

@@ -165,7 +165,7 @@ class IncomingInvitationActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mediaPlayer = MediaPlayer.create(this,R.raw.musi)
+        mediaPlayer = MediaPlayer.create(this,R.raw.receive_music)
         mediaPlayer.isLooping=true
         mediaPlayer.start()
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
