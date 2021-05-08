@@ -131,7 +131,21 @@ class GroupChatFragment : Fragment() {
 
     fun refreshLatestChatMessenger() {
         adapter.clear()
-        var list = mergeSort(latestMessengerMap.values.toList())
+        var list = ArrayList<GroupChatMessenger>()
+
+        list.addAll(mergeSort(latestMessengerMap.values.toList()))
+
+        var i = 0
+        var n = list.size
+
+        while (i < n) {
+            if (list[i].timeStamp.toInt() == 100) {
+                list.remove(list[i])
+                n--
+            }
+            else { i++ }
+        }
+
         for (i in list.indices) {
             adapter.add(GroupLatestMessenger(list[i]))
         }
@@ -164,7 +178,13 @@ class GroupChatFragment : Fragment() {
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-
+                val group = snapshot.getValue(Group::class.java) ?: return
+                val latestMessenger = group.getLatestMessenger()
+                latestMessenger.timeStamp = 100
+                latestMessengerMap[snapshot.key!!] = latestMessenger
+//                println("""""""""""""""""""")
+//                println(latestMessenger.text)
+                refreshLatestChatMessenger()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {

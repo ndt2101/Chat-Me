@@ -73,6 +73,7 @@ class GroupChatLogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_log)
 
+
         EmojiManager.install(IosEmojiProvider())
 
         group = intent.getSerializableExtra("group") as Group
@@ -107,6 +108,39 @@ class GroupChatLogActivity : AppCompatActivity() {
 
                 }
             })
+
+        FirebaseDatabase.getInstance().getReference("Groups").child(group.getId())
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val realTimeGroup = snapshot.getValue(Group::class.java)!!
+                        var check = false
+
+                        realTimeGroup.getMembers().forEach {
+                            if (it.getUid().equals(FirebaseAuth.getInstance().uid)) {
+                                check = true
+                            }
+                        }
+
+                        if (check == false) {
+                            Toast.makeText(applicationContext, "This group is not available to you", Toast.LENGTH_LONG).show()
+
+                            val intent = Intent(this@GroupChatLogActivity, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            }
+            )
+
+
 
 
 
@@ -159,22 +193,11 @@ class GroupChatLogActivity : AppCompatActivity() {
 
         }
 
-        binding.chat.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(
-                v: View?,
-                left: Int,
-                top: Int,
-                right: Int,
-                bottom: Int,
-                oldLeft: Int,
-                oldTop: Int,
-                oldRight: Int,
-                oldBottom: Int
-            ) {
-                binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
-            }
-
-        })
+        binding.chat.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            binding.listMessenger.scrollToPosition(
+                adapter.itemCount - 1
+            )
+        }
 
         binding.videoCall.setOnClickListener {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
@@ -376,7 +399,6 @@ class GroupChatLogActivity : AppCompatActivity() {
                             .addOnSuccessListener {
                                 binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
                             }
-
 
                         val latestMessengerReference = FirebaseDatabase.getInstance()
                             .getReference("/Groups/${groupId}")

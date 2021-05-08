@@ -28,15 +28,17 @@ import com.tuan2101.chatme.databinding.ActivityCreateGroupChatBinding
 import com.tuan2101.chatme.viewModel.Group
 import com.tuan2101.chatme.viewModel.User
 
+
 class EditGroupActivity : AppCompatActivity()  {
 
     lateinit var adapter: SearchUserToAddAdapter
     lateinit var binding: ActivityCreateGroupChatBinding
     lateinit var group: Group
     lateinit var users: List<User>
-    lateinit var groupMembers: MutableLiveData<List<User>>
+    var groupMembers: MutableLiveData<List<User>> = MutableLiveData()
     lateinit var groupMembersClone: List<User>
     lateinit var currentUser: User
+
 
     private val _requestCode = 8888
     var imageUri: Uri? = null
@@ -52,12 +54,17 @@ class EditGroupActivity : AppCompatActivity()  {
 
         Picasso.get().load(group.getAvt()).into(binding.setGroupAvt)
         binding.setGroupName.setText(group.getName())
+        url = group.getAvt()
+
+        val oldMembersList: List<User> = group.getMembers()
+
 
         binding.searchList.layoutManager = LinearLayoutManager(applicationContext) //context
 
         users = ArrayList()
-        groupMembers = MutableLiveData()
-        groupMembersClone = group.getMembers()
+
+        groupMembersClone = ArrayList<User>()
+        (groupMembersClone as ArrayList<User>).addAll(group.getMembers())
 
 
         groupMembersClone.forEach {
@@ -89,9 +96,10 @@ class EditGroupActivity : AppCompatActivity()  {
             }
 
             binding.createButton.setOnClickListener {
-                updateGroup()
+                updateGroup(oldMembersList)
                 navigateToGroupChatLogActivity()
             }
+
         }else {
             binding.editGroup.visibility = View.GONE
             binding.setGroupName.visibility = View.GONE
@@ -177,7 +185,6 @@ class EditGroupActivity : AppCompatActivity()  {
                     users, groupMembers, groupMembersClone)
                 binding.searchList.adapter = adapter
 
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -198,16 +205,45 @@ class EditGroupActivity : AppCompatActivity()  {
         }
     }
 
-    fun updateGroup() {
+    fun updateGroup(oldMembersList: List<User>) {
         val reference = FirebaseDatabase.getInstance().getReference("/Groups").child(group.getId())
 
         val groupName: String = binding.setGroupName.text.toString()
 
-        if (groupName.isNotEmpty() && groupMembers.value!!.isNotEmpty() && url.isNotEmpty()) {
+        if (groupName.isNotEmpty()) {
+            var clickedOutMembers = ArrayList<User>()
             val map = HashMap<String, Any>()
             map["avt"] = url
             map["name"] = binding.setGroupName.text.toString()
-            map["members"] = groupMembers.value!!
+            if (groupMembers.value != null && groupMembers.value!!.isNotEmpty()) {
+                map["members"] = groupMembers.value!!
+
+                for (old in oldMembersList) {
+
+                    if (groupMembers.value!!.indexOf(old) == -1) {
+                        val removeMembersReference = FirebaseDatabase.getInstance()
+                            .getReference("/User_Groups/${old.getUid()}/${group.getId()}")
+
+                        removeMembersReference.setValue(null)
+
+                    }
+                }
+
+                for (new in groupMembers.value!!) {
+
+                    if (oldMembersList.indexOf(new) == -1) {
+                        val removeMembersReference = FirebaseDatabase.getInstance()
+                            .getReference("/User_Groups/${new.getUid()}/${group.getId()}")
+
+                        removeMembersReference.setValue(group)
+
+                    }
+                }
+
+            }
+            else {
+                map["members"] = group.getMembers()
+            }
 
             reference.updateChildren(map)
                 .addOnSuccessListener {
@@ -244,6 +280,8 @@ class EditGroupActivity : AppCompatActivity()  {
                     var downloadUrl = task.result // url de picasso load anh
                     url = downloadUrl.toString()
                     Picasso.get().load(url).into(binding.setGroupAvt)
+
+                    Toast.makeText( this@EditGroupActivity, "Set image successfully", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(applicationContext, "Avatar update error", Toast.LENGTH_LONG)
                         .show()
