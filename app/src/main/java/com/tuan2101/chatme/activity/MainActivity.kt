@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             sendToSearchActivity()
         }
 
-        checkForBatteryOptimization()
+        if (currentUser != null){ checkForBatteryOptimization() }
     }
 
     override fun onStart() {
@@ -156,10 +156,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        val updateRef = referenceUser!!.child("User").child(currentUser!!.uid)
+        if(currentUser!=null){
+            val updateRef = referenceUser!!.child("User").child(currentUser!!.uid)
 
-        val map: HashMap<String, Any> = HashMap()
-        map["status"] = "offline"
-        updateRef.updateChildren(map)
+            val map: HashMap<String, Any> = HashMap()
+            map["status"] = "offline"
+            updateRef.updateChildren(map)
+        }
     }
 }
