@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
+import com.tuan2101.chatme.databinding.ActivityGroupChatLogBinding
 import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.network.ApiService
 import com.tuan2101.chatme.viewModel.Constants
@@ -65,13 +66,13 @@ class GroupChatLogActivity : AppCompatActivity() {
 
     private val _requestCode = 5555
 
-    lateinit var binding: ActivityChatLogBinding
+    lateinit var binding: ActivityGroupChatLogBinding
     lateinit var group: Group
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_log)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_group_chat_log)
 
 
         EmojiManager.install(IosEmojiProvider())
@@ -84,18 +85,6 @@ class GroupChatLogActivity : AppCompatActivity() {
             binding.userName.text = group.getName().trim()
             Picasso.get().load(group.getAvt()).into(binding.avt)
         }
-
-//        FirebaseDatabase.getInstance().reference.child("User")
-//            .child(FirebaseAuth.getInstance().currentUser.uid).addValueEventListener(object :
-//                ValueEventListener {
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    currentUser = snapshot.getValue(User::class.java) ?: return
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//
-//                }
-//            })
 
         FirebaseDatabase.getInstance().reference.child("User")
             .child(FirebaseAuth.getInstance().currentUser.uid).addListenerForSingleValueEvent(object :
@@ -141,9 +130,6 @@ class GroupChatLogActivity : AppCompatActivity() {
             )
 
 
-
-
-
         binding.listMessenger.layoutManager = LinearLayoutManager(applicationContext)
 
 
@@ -157,6 +143,35 @@ class GroupChatLogActivity : AppCompatActivity() {
 
         binding.imageSend.setOnClickListener {
             setImage()
+        }
+
+        val whiteBoardReference = FirebaseDatabase.getInstance().reference.child("Group_WhiteBoard").child(group.getId())
+
+        whiteBoardReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    binding.createBoard.setOnClickListener {
+                        val map = HashMap<String, Any>()
+                        map["createTime"] = System.currentTimeMillis()
+                        whiteBoardReference.setValue(map)
+                    }
+                } else {
+                    binding.createBoard.visibility = View.GONE
+                    binding.board.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+        binding.board.setOnClickListener {
+            val intent = Intent(this@GroupChatLogActivity, DrawingActivity::class.java)
+            intent.putExtra("groupId", group.getId())
+            startActivity(intent)
+            finish()
         }
 
         binding.chat.addTextChangedListener(object : TextWatcher {

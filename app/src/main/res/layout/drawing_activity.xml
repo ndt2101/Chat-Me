@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".activity.DrawingActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/app_bar_style"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:drawableStart="@drawable/ic_baseline_clear_24"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="300dp"
+            android:text="Clear"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:drawablePadding="2dp"
+
+            />
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/to_get_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="DrawingActivity"
+        android:layout_below="@id/toolbar"/>
+</RelativeLayout>
