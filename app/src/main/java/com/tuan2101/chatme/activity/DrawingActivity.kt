@@ -2,6 +2,8 @@ package com.tuan2101.chatme.activity
 
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +14,10 @@ import com.tuan2101.chatme.activity.view.DrawingView
 class DrawingActivity: AppCompatActivity() {
     var mDrawingView: DrawingView? = null
     lateinit var mFirebaseReference: DatabaseReference
-    var mBoardWidth: Int = 3000
-    var mBoardHeight: Int = 3000
     lateinit var textView: TextView
     lateinit var clear: TextView
+    var height: Int = 0
+    var width: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +26,8 @@ class DrawingActivity: AppCompatActivity() {
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
+        height = displayMetrics.heightPixels
+        width = displayMetrics.widthPixels
 
         mFirebaseReference = FirebaseDatabase.getInstance().reference.child("Group_WhiteBoard").child(
             groupId!!
@@ -56,6 +58,31 @@ class DrawingActivity: AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
 
+        menu?.add(0, Menu.FIRST, 0, "Clear")?.setShortcut('5', 'x')
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        mDrawingView?.cleanUp()
+        mFirebaseReference.removeValue()
+            .addOnCompleteListener{
+                mDrawingView =  DrawingView(
+                    this@DrawingActivity,
+                    mFirebaseReference.child("segments"),
+                    width,
+                    height
+                )
+                setContentView(mDrawingView)
+            }
+        return true
+    }
 
 }

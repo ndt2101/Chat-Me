@@ -32,7 +32,8 @@ class DrawingView(
     private var mPath: Path = Path()
     private var mOutStandingSegments: Set<String> = HashSet()
     private lateinit var mCurrentSegment: Segment
-    var currentColor: Long = 0xFFFF0000
+    val currentColor: Long = 0xFFFF0000
+    lateinit var drawSegment: Segment
 
 
     constructor(
@@ -214,6 +215,12 @@ class DrawingView(
         mLastX = (x / PIXEL_SIZE).toInt()
         mLastY = (y / PIXEL_SIZE).toInt()
         mCurrentSegment.addPoint(mLastX, mLastY)
+
+        drawSegment = Segment(currentColor)
+
+        drawSegment.addPoint((mLastX / mScale).roundToInt(), (mLastY / mScale).roundToInt())
+
+        drawSegment(drawSegment, paintFromColor(R.color.violet))
     }
 
 
@@ -221,11 +228,11 @@ class DrawingView(
      * tinh toan toa do va vector de ve va add diem vao mCurrentSegment
      */
     fun onTouchMove(x: Float, y: Float) {
-        var x1: Int = (x / PIXEL_SIZE).toInt()
-        var y1: Int = (y / PIXEL_SIZE).toInt()
+        val x1: Int = (x / PIXEL_SIZE).toInt()
+        val y1: Int = (y / PIXEL_SIZE).toInt()
 
-        var dx = abs(x1 - mLastX)
-        var dy = abs(y1 - mLastY)
+        val dx: Float = abs(x1 - mLastX).toFloat()
+        val dy: Float = abs(y1 - mLastY).toFloat()
 
         if (dx >= 1 || dy >= 1) {
             mPath.quadTo(
@@ -238,6 +245,10 @@ class DrawingView(
             mLastX = x1
             mLastY = y1
             mCurrentSegment.addPoint(mLastX, mLastY)
+
+            drawSegment.addPoint((mLastX / mScale).roundToInt(), (mLastY / mScale).roundToInt())
+
+            drawSegment(drawSegment, paintFromColor(R.color.violet))
         }
     }
 
@@ -256,33 +267,34 @@ class DrawingView(
         //scale segment cho vua man hinh
         var segment = Segment(mCurrentSegment.getColor())
         for (point in mCurrentSegment.getPoints()) {
-            segment.addPoint(Math.round(point.getX() / mScale), Math.round(point.getY() / mScale))
+            segment.addPoint((point.getX() / mScale).roundToInt(),
+                (point.getY() / mScale).roundToInt()
+            )
         }
 
         //push segment len firebase dong thoi xoa ten segment ra khoi mOutStandingSegments de tranh bi lap lai (vi da push len firebase roi, luc do canvas se lay segment moi tren firebase de load vao canvas)
         segmentReference.setValue(segment)
-
-        (mOutStandingSegments as HashSet<String>).remove(segmentName)
+            .addOnCompleteListener() {
+                (mOutStandingSegments as HashSet<String>).remove(segmentName)
+            }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event != null){
-            var x: Float = event.x
-            var y: Float = event.y
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val x: Float = event.x
+        val y: Float = event.y
 
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    onTouchStart(x, y)
-                    invalidate()
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    onTouchMove(x, y)
-                    invalidate()
-                }
-                MotionEvent.ACTION_UP -> {
-                    onTouchEnd()
-                    invalidate()
-                }
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                onTouchStart(x, y)
+                invalidate()
+            }
+            MotionEvent.ACTION_MOVE -> {
+                onTouchMove(x, y)
+                invalidate()
+            }
+            MotionEvent.ACTION_UP -> {
+                onTouchEnd()
+                invalidate()
             }
         }
         return true
