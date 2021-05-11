@@ -61,6 +61,7 @@ class DrawingView(
     ) : this(context, mFirebaseRef, scale, 0, 0)
 
     init {
+
         mListener = mFirebaseRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 var name: String? = snapshot.key
@@ -299,4 +300,6 @@ class DrawingView(
         }
         return true
     }
+
+
 }

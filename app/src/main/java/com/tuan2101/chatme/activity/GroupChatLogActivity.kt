@@ -171,7 +171,6 @@ class GroupChatLogActivity : AppCompatActivity() {
             val intent = Intent(this@GroupChatLogActivity, DrawingActivity::class.java)
             intent.putExtra("groupId", group.getId())
             startActivity(intent)
-            finish()
         }
 
         binding.chat.addTextChangedListener(object : TextWatcher {
