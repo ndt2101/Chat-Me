@@ -9,6 +9,7 @@
 
 
 <RelativeLayout
+    android:id="@+id/cv2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="30dp"
@@ -83,6 +84,18 @@
         tools:text="text"
         >
     </TextView>
+
+    <TextView
+        android:id="@+id/guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_name"
+        android:layout_alignStart="@+id/cv1"
+        android:layout_alignEnd="@+id/cv1"
+        android:layout_marginStart="110dp"
+        android:layout_marginEnd="110dp"
+        android:paddingTop="3dp"
+        android:text="Click any item to edit" />
 
     <EditText
         android:id="@+id/introduce_edit"
@@ -203,6 +216,25 @@
         android:textAllCaps="false"
         android:textSize="20sp"
         android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/home_town"
+        android:layout_alignStart="@+id/cv1"
+        android:layout_alignEnd="@+id/cv1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="125dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_style"
+        android:drawableStart="@drawable/ic_baseline_logout_24"
+        android:paddingLeft="5dp"
+        android:paddingEnd="3dp"
+        android:text="Log out"
+        android:textColor="@color/white" />
 </RelativeLayout>
 
     </ScrollView>

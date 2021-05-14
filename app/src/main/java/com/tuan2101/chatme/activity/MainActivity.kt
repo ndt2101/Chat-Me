@@ -118,11 +118,7 @@ class MainActivity : AppCompatActivity() {
         super.onOptionsItemSelected(item)
 
         if (item.itemId == R.id.option_setting) {
-
-        }
-        else if (item.itemId == R.id.option_logout) {
-            firebaseAuth.signOut()
-            sendToLoginActivity()
+            navigateToAboutApp()
         }
         return true
     }
@@ -163,5 +159,9 @@ class MainActivity : AppCompatActivity() {
             map["status"] = "offline"
             updateRef.updateChildren(map)
         }
+    }
+    fun navigateToAboutApp() {
+        val intent = Intent(this@MainActivity, AboutAppActivity::class.java)
+        startActivity(intent)
     }
 }

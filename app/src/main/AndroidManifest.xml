@@ -30,6 +30,7 @@
         <activity android:name=".activity.SearchActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.AboutAppActivity" />
         <activity android:name=".activity.EditGroupActivity" />
         <activity android:name=".activity.DrawingActivity"
             android:theme="@style/Theme.DrawingActivity"

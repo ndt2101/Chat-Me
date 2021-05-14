@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/option_setting"
-        android:title="Setting"
-        app:showAsAction="ifRoom"
+        android:title="About Chat Me"
         />
-
-    <item
-        android:id="@+id/option_logout"
-        android:title="Logout"
-        app:showAsAction="ifRoom"/>
 </menu>

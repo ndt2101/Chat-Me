@@ -25,6 +25,7 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
+import com.tuan2101.chatme.activity.LoginActivity
 import com.tuan2101.chatme.databinding.FragmentProfileBinding
 import com.tuan2101.chatme.viewModel.User
 import com.tuan2101.chatme.viewModel.hideKeyboard
@@ -43,6 +44,7 @@ class ProfileFragment : Fragment() {
     var nickName: String = ""
     var workText: String = ""
     var homeTownText: String = ""
+    var currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,6 +113,11 @@ class ProfileFragment : Fragment() {
             clickToEdit()
         }
 
+        binding.logoutButton.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            sendToLoginActivity()
+        }
+
         binding.update.setOnClickListener {
             if (binding.userNameEdit.text.toString().isNotEmpty()) {
                 var updateMap = HashMap<String, Any>()
@@ -151,6 +158,15 @@ class ProfileFragment : Fragment() {
         startActivityForResult(intent, 2101)
     }
 
+    private fun sendToLoginActivity() {
+        var map = HashMap<String, Any>()
+        map["token"] = ""
+        currentUser?.let { FirebaseDatabase.getInstance().reference.child("User").child(it.uid).updateChildren(map) }
+        val intent = Intent(context, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
     fun clickToEdit() {
 
         binding.userName.visibility = View.GONE
@@ -168,6 +184,8 @@ class ProfileFragment : Fragment() {
         binding.homeTownEdit.setText(binding.homeTown.text.substring(5))
 
         binding.update.visibility = View.VISIBLE
+        binding.logoutButton.visibility = View.GONE
+        binding.guide.visibility = View.GONE
 
     }
 
@@ -183,6 +201,8 @@ class ProfileFragment : Fragment() {
         binding.homeTownEdit.visibility = View.GONE
 
         binding.update.visibility = View.GONE
+        binding.logoutButton.visibility = View.VISIBLE
+        binding.guide.visibility = View.VISIBLE
 
     }
 
