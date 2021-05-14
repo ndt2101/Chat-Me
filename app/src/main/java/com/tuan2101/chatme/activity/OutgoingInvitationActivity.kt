@@ -46,13 +46,14 @@ import kotlin.collections.ArrayList
     var rejectionCount = 0
     var totalReceivers = 0
     lateinit var mediaPlayer: MediaPlayer
+    var check = false
+     lateinit var call : Call<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView( this, R.layout.activity_outgoing_invitation)
 
-
-
+        check = true
 
 
 //        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener ( object: OnCompleteListener<InstanceIdResult> {
@@ -188,31 +189,47 @@ import kotlin.collections.ArrayList
     }
 
     fun sendRemoteMessage(remoteMessage: String, type: String) {
-        ApiClient.getClient().create(ApiService::class.java).sendRemoteMessage(
+        call = ApiClient.getClient().create(ApiService::class.java).sendRemoteMessage(
             Constants.getRemoteMessageHeaders(), remoteMessage
-        ).enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
-                        Toast.makeText(this@OutgoingInvitationActivity, "Invitation sent successfully",Toast.LENGTH_SHORT).show()
-                    }
-                    else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
-                        Toast.makeText(this@OutgoingInvitationActivity, "Invitation rejected",Toast.LENGTH_SHORT).show()
+        )
+        if (check){
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
+                            Toast.makeText(
+                                this@OutgoingInvitationActivity,
+                                "Invitation sent successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
+                            Toast.makeText(
+                                this@OutgoingInvitationActivity,
+                                "Invitation rejected",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish()
+                        }
+                    } else {
+                        Toast.makeText(
+                            this@OutgoingInvitationActivity,
+                            response.message(),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         finish()
                     }
                 }
-                else {
-                    Toast.makeText(this@OutgoingInvitationActivity, response.message(),Toast.LENGTH_SHORT).show()
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Toast.makeText(this@OutgoingInvitationActivity, t.message, Toast.LENGTH_SHORT)
+                        .show()
                     finish()
                 }
-            }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Toast.makeText(this@OutgoingInvitationActivity, t.message,Toast.LENGTH_SHORT).show()
-                finish()
-            }
-
-        })
+            })
+        } else {
+            call.cancel()
+        }
     }
 
     fun cancelInvitation(receiverToken: String?, receivers: ArrayList<User>?) {
@@ -294,6 +311,8 @@ import kotlin.collections.ArrayList
     override fun onStop() {
         super.onStop()
         mediaPlayer.stop()
+        check = false
+        call.cancel()
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(
             invitationResponseReceiver
         )
