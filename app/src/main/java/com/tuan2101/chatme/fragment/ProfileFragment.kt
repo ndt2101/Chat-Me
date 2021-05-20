@@ -122,6 +122,7 @@ class ProfileFragment : Fragment() {
             if (binding.userNameEdit.text.toString().isNotEmpty()) {
                 var updateMap = HashMap<String, Any>()
                 updateMap["name"] = binding.userNameEdit.text.toString()
+                updateMap["search"] = binding.userNameEdit.text.toString().toLowerCase()
                 userReference.updateChildren(updateMap)
             }
 
