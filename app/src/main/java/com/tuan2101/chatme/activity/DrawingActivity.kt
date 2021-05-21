@@ -65,7 +65,7 @@ class DrawingActivity: AppCompatActivity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         height = displayMetrics.heightPixels
-        width = displayMetrics.widthPixels
+        width = displayMetrics.widthPixels + 110
 
         mFirebaseReference = FirebaseDatabase.getInstance().reference.child("Group_WhiteBoard").child(
             groupId!!

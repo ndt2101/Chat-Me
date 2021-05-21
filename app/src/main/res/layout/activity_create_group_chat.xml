@@ -34,12 +34,12 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/set_group_name"
-            android:layout_width="280dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:hint="Group name"
+            android:layout_marginStart="120dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.542"
             app:layout_constraintStart_toEndOf="@+id/set_group_avt"
             app:layout_constraintTop_toTopOf="parent"
             />

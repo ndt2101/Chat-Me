@@ -22,8 +22,15 @@
                 android:background="@drawable/app_bar_style"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/avt"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_profile"
@@ -33,9 +40,12 @@
 
                 <TextView
                     android:id="@+id/user_name"
+                    android:layout_marginTop="9dp"
+                    app:layout_constraintStart_toEndOf="@id/avt"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="26dp"
+                    android:layout_marginStart="16dp"
                     android:text="User Name"
                     android:textColor="@color/white"
                     android:textSize="18sp"
@@ -47,39 +57,50 @@
 
                 <ImageView
                     android:id="@+id/create_board"
+                    app:layout_constraintEnd_toStartOf="@id/voice_call"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_baseline_add_24"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="5dp"
                     />
 
                 <ImageView
                     android:id="@+id/board"
+                    app:layout_constraintEnd_toStartOf="@id/voice_call"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/white_board"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:visibility="gone"
                     />
 
                 <ImageView
                     android:id="@+id/voice_call"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/video_call"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:src="@drawable/call_icon"
                     app:tint="@color/white"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="20dp"
                     />
 
                 <ImageView
                     android:id="@+id/video_call"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/video_call"
                     app:tint="@color/white"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginEnd="10dp"
                     />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
