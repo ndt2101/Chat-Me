@@ -114,7 +114,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="3dp"
         android:layout_marginTop="45dp"
-        android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_auto_story"
         android:drawablePadding="15dp"
         android:drawableTint="@color/violet"
@@ -133,7 +132,6 @@
         app:layout_constraintTop_toBottomOf="@id/user_name"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="45dp"
-        android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_auto_story"
         android:drawablePadding="15dp"
         android:drawableTint="@color/violet"
@@ -152,7 +150,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="3dp"
         android:layout_marginTop="20dp"
-        android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_work"
         android:drawablePadding="15dp"
         android:drawableTint="@color/violet"
@@ -171,12 +168,10 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="3dp"
         android:layout_marginTop="20dp"
-        android:textAlignment="center"
-        android:drawableLeft="@drawable/ic_baseline_work"
         android:drawablePadding="15dp"
         android:drawableTint="@color/violet"
         tools:text="text"
-        >
+        app:drawableLeftCompat="@drawable/ic_baseline_work">
     </TextView>
 
     <EditText
@@ -190,8 +185,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="3dp"
         android:layout_marginTop="20dp"
-        android:textAlignment="center"
-        android:drawableLeft="@drawable/ic_baseline_home"
+        android:drawableStart="@drawable/ic_baseline_home"
         android:drawablePadding="5dp"
         android:drawableTint="@color/violet"
         android:visibility="gone"
@@ -209,7 +203,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="3dp"
         android:layout_marginTop="20dp"
-        android:textAlignment="center"
         android:drawableLeft="@drawable/ic_baseline_home"
         android:drawablePadding="5dp"
         android:drawableTint="@color/violet"
