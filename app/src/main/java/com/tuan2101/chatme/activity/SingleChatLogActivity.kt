@@ -4,12 +4,14 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -115,11 +117,32 @@ class SingleChatLogActivity : AppCompatActivity() {
         }
 
         binding.avt.setOnClickListener {
-            navigateToInfoActivity(user)
+
+            val popupMenu = PopupMenu(applicationContext, binding.avt)
+            popupMenu.inflate(R.menu.more)
+            popupMenu.setOnMenuItemClickListener {
+                if (it.itemId.equals(R.id.profile)) {
+                    navigateToInfoActivity(user)
+                } else if (it.itemId.equals(R.id.delete)) {
+                    removeConversation()
+                }
+                true
+            }
+            popupMenu.show()
         }
 
         binding.userName.setOnClickListener {
-            navigateToInfoActivity(user)
+            val popupMenu = PopupMenu(applicationContext, binding.avt)
+            popupMenu.inflate(R.menu.more)
+            popupMenu.setOnMenuItemClickListener {
+                if (it.itemId.equals(R.id.profile)) {
+                    navigateToInfoActivity(user)
+                } else if (it.itemId.equals(R.id.delete)) {
+                    Toast.makeText(applicationContext, "xoa", Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            popupMenu.show()
         }
 
         binding.chat.addTextChangedListener(object : TextWatcher {
@@ -173,6 +196,8 @@ class SingleChatLogActivity : AppCompatActivity() {
 
         })
 
+
+
         binding.videoCall.setOnClickListener {
             makeVideoCall()
             navigateToOutGoingActivity("video")
@@ -183,6 +208,18 @@ class SingleChatLogActivity : AppCompatActivity() {
             navigateToOutGoingActivity("voice")
         }
     }
+
+    fun removeConversation() {
+        val fromId = FirebaseAuth.getInstance().uid
+        val referenceLastestMessenger = FirebaseDatabase.getInstance().getReference("/latest-messenger/$fromId/${user.getUid()}")
+        val reference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/${user.getUid()}")
+        referenceLastestMessenger.removeValue()
+        reference.removeValue()
+            .addOnCompleteListener{
+                navigateOut()
+            }
+    }
+
 
     /**
      * ham lay toan bo tin nhan hien co tren firebase de load vao recyclerView theo uid de quyet dinh load item nao
@@ -469,11 +506,8 @@ class SingleChatLogActivity : AppCompatActivity() {
         ).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@SingleChatLogActivity,
-                        "send successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    var mediaPlayer: MediaPlayer = MediaPlayer.create(applicationContext,R.raw.send_message)
+                    mediaPlayer.start()
                 } else {
                     Toast.makeText(
                         this@SingleChatLogActivity,
@@ -494,6 +528,14 @@ class SingleChatLogActivity : AppCompatActivity() {
     /**
      * ket thuc
      */
+
+    fun navigateOut() {
+        val intent = Intent(this@SingleChatLogActivity, MainActivity::class.java)
+        Toast.makeText(applicationContext," Remove this conversation successfully", Toast.LENGTH_SHORT).show()
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+    }
 
     fun navigateToImageActivity(url: String) {
         val intent = Intent(this@SingleChatLogActivity, ImageActivity::class.java)

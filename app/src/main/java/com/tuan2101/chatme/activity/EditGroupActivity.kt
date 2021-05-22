@@ -194,8 +194,6 @@ class EditGroupActivity : AppCompatActivity()  {
     }
 
 
-
-
     fun navigateToGroupChatLogActivity() {
         if (group != null){
             val intent = Intent(this@EditGroupActivity,MainActivity::class.java)

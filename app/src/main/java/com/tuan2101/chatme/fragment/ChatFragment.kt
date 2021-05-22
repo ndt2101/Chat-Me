@@ -1,11 +1,16 @@
 package com.tuan2101.chatme.fragment
 
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -200,7 +205,7 @@ class ChatFragment : Fragment() {
 
 }
 
-class LatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>() {
+class LatestMessenger(val chatMessenger: ChatMessenger) : Item<ViewHolder>() {
 
     lateinit var user: User
 
@@ -250,8 +255,8 @@ class LatestMessenger(val chatMessenger: ChatMessenger,) : Item<ViewHolder>() {
 
             })
 
-
     }
+
 
     override fun getLayout(): Int {
         return R.layout.chat_view_holder

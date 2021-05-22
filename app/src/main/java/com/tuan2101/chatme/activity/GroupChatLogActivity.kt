@@ -2,12 +2,14 @@ package com.tuan2101.chatme.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -67,23 +69,43 @@ class GroupChatLogActivity : AppCompatActivity() {
     private val _requestCode = 5555
 
     lateinit var binding: ActivityGroupChatLogBinding
+    lateinit var _group: Group
     lateinit var group: Group
+    var listener: Boolean = false
+    lateinit var valueEventListener: ValueEventListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_group_chat_log)
 
+        listener = true
 
         EmojiManager.install(IosEmojiProvider())
 
-        group = intent.getSerializableExtra("group") as Group
+        _group = intent.getSerializableExtra("group") as Group
+
+
+
+        FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId())
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    group = snapshot.getValue(Group::class.java)!!
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+
+
 
         var popup = EmojiPopup.Builder.fromRootView(binding.chatLayout).build(binding.chat as EditText)
 
         if (applicationContext != null ){
-            binding.userName.text = group.getName().trim()
-            Picasso.get().load(group.getAvt()).into(binding.avt)
+            binding.userName.text = _group.getName().trim()
+            Picasso.get().load(_group.getAvt()).into(binding.avt)
         }
 
         FirebaseDatabase.getInstance().reference.child("User")
@@ -97,37 +119,15 @@ class GroupChatLogActivity : AppCompatActivity() {
 
                 }
             })
+        val reference = FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId())
+            if (listener){
 
-        FirebaseDatabase.getInstance().getReference("Groups").child(group.getId())
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val realTimeGroup = snapshot.getValue(Group::class.java)!!
-                        var check = false
-
-                        realTimeGroup.getMembers().forEach {
-                            if (it.getUid().equals(FirebaseAuth.getInstance().uid)) {
-                                check = true
-                            }
-                        }
-
-                        if (check == false) {
-                            Toast.makeText(applicationContext, "This group is not available to you", Toast.LENGTH_LONG).show()
-
-                            val intent = Intent(this@GroupChatLogActivity, MainActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            startActivity(intent)
-                            finish()
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-
+                initValueListenter(reference)
+                reference
+                    .addValueEventListener(valueEventListener)
+            } else {
+                reference.removeEventListener(valueEventListener)
             }
-            )
 
 
         binding.listMessenger.layoutManager = LinearLayoutManager(applicationContext)
@@ -145,7 +145,7 @@ class GroupChatLogActivity : AppCompatActivity() {
             setImage()
         }
 
-        val whiteBoardReference = FirebaseDatabase.getInstance().reference.child("Group_WhiteBoard").child(group.getId())
+        val whiteBoardReference = FirebaseDatabase.getInstance().reference.child("Group_WhiteBoard").child(_group.getId())
 
         whiteBoardReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -199,12 +199,6 @@ class GroupChatLogActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener{
             loadTextMessenger()
             binding.chat.setText("")
-
-//            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//            imm.hideSoftInputFromWindow(binding.chat.getWindowToken(), 0)
-//            val inputMethodManager = applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//            inputMethodManager.toggleSoftInput(SHOW_FORCED, HIDE_IMPLICIT_ONLY)
-
         }
 
         binding.chat.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
@@ -216,8 +210,13 @@ class GroupChatLogActivity : AppCompatActivity() {
         binding.videoCall.setOnClickListener {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
             val removeCurrentUser = ArrayList<User>()
+
+            println("====================-------------------------------===========================")
+            println("====================-------------------------------===========================")
+            println(currentUser.getUid())
             group.getMembers().forEach {
                 if (!it.getUid().equals(currentUser.getUid())) {
+                    println(it.getUid())
                     removeCurrentUser.add(it)
                 }
             }
@@ -246,16 +245,108 @@ class GroupChatLogActivity : AppCompatActivity() {
         }
 
         binding.avt.setOnClickListener {
-            val intent = Intent(this, EditGroupActivity::class.java)
-            intent.putExtra("group", group)
-            startActivity(intent)
+
+            val popupMenu = PopupMenu(applicationContext, binding.avt)
+            popupMenu.inflate(R.menu.group_menu)
+            popupMenu.setOnMenuItemClickListener {
+                if (it.itemId.equals(R.id.profile)) {
+                    navigateToEditGroupActivity()
+                } else if (it.itemId.equals(R.id.delete)) {
+                    removeConversation()
+                } else if (it.itemId.equals(R.id.leave_group)) {
+                    removeConversation()
+                    leaveGroup()
+                }
+                true
+            }
+            popupMenu.show()
         }
 
         binding.userName.setOnClickListener {
-            val intent = Intent(this, EditGroupActivity::class.java)
-            intent.putExtra("group", group)
-            startActivity(intent)
+            val popupMenu = PopupMenu(applicationContext, binding.avt)
+            popupMenu.inflate(R.menu.group_menu)
+            popupMenu.setOnMenuItemClickListener {
+                if (it.itemId.equals(R.id.profile)) {
+                    navigateToEditGroupActivity()
+                } else if (it.itemId.equals(R.id.delete)) {
+                    removeConversation()
+                } else if (it.itemId.equals(R.id.leave_group)) {
+                    removeConversation()
+                    leaveGroup()
+                }
+                true
+            }
+            popupMenu.show()
         }
+    }
+
+    fun leaveGroup() {
+        var targetUser: User
+        var leavedGroupMembers: ArrayList<User> = (_group.getMembers() as ArrayList<User>)
+        loop@for (item in (_group.getMembers() as ArrayList<User>)) {
+            if (item.getUid().equals(currentUser.getUid())) {
+                targetUser = item
+                leavedGroupMembers.remove(targetUser)
+                break@loop
+            }
+        }
+
+        if (FirebaseAuth.getInstance().uid?.equals(_group.getAdminId()) == true) {
+            FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId()).child("adminId")
+                .setValue(_group.getMembers()[0].getUid())
+        }
+
+        FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId()).child("members")
+            .setValue(leavedGroupMembers)
+    }
+
+    fun initValueListenter(reference: DatabaseReference) {
+        valueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val realTimeGroup = snapshot.getValue(Group::class.java)!!
+                    var check = false
+
+                    realTimeGroup.getMembers().forEach {
+                        if (it.getUid().equals(FirebaseAuth.getInstance().uid)) {
+                            check = true
+                        }
+                    }
+
+                    if (!check) {
+                        Toast.makeText(
+                            applicationContext,
+                            "This group is not available to you",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        reference.removeEventListener(this)
+                        listener = false
+                        finish()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+    }
+
+    fun removeConversation() {
+        val removeMembersReference = FirebaseDatabase.getInstance()
+            .getReference("/User_Groups/${currentUser.getUid()}/${group.getId()}")
+
+        removeMembersReference.removeValue()
+            .addOnCompleteListener {
+                Toast.makeText(applicationContext, "Delete conversation successfully", Toast.LENGTH_LONG).show()
+                finish()
+            }
+    }
+
+    fun navigateToEditGroupActivity() {
+        val intent = Intent(this, EditGroupActivity::class.java)
+        intent.putExtra("group", group)
+        startActivity(intent)
     }
 
     /**
@@ -263,7 +354,7 @@ class GroupChatLogActivity : AppCompatActivity() {
      */
     private fun listenForMessenger() {
 
-        val groupId = group.getId()
+        val groupId = _group.getId()
 
         val reference = FirebaseDatabase.getInstance().getReference("/group_messengers/$groupId")
         reference.addChildEventListener(object : ChildEventListener {
@@ -514,10 +605,7 @@ class GroupChatLogActivity : AppCompatActivity() {
             Constants.getRemoteMessageHeaders(), remoteMessage
         ).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(this@GroupChatLogActivity, "send successfully", Toast.LENGTH_SHORT).show()
-                }
-                else {
+                if (!response.isSuccessful) {
                     Toast.makeText(this@GroupChatLogActivity, response.message(),Toast.LENGTH_SHORT).show()
                     finish()
                 }
@@ -538,6 +626,11 @@ class GroupChatLogActivity : AppCompatActivity() {
         val intent = Intent(this@GroupChatLogActivity, ImageActivity::class.java)
         intent.putExtra("image", url)
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener = false
     }
 }
 

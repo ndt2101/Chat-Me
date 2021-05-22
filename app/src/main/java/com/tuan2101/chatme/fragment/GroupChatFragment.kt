@@ -1,6 +1,7 @@
 package com.tuan2101.chatme.fragment
 
 import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -141,6 +142,7 @@ class GroupChatFragment : Fragment() {
         while (i < n) {
             if (list[i].timeStamp.toInt() == 100) {
                 list.remove(list[i])
+
                 n--
             }
             else { i++ }
@@ -178,13 +180,15 @@ class GroupChatFragment : Fragment() {
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                val group = snapshot.getValue(Group::class.java) ?: return
-                val latestMessenger = group.getLatestMessenger()
-                latestMessenger.timeStamp = 100
-                latestMessengerMap[snapshot.key!!] = latestMessenger
-//                println("""""""""""""""""""")
-//                println(latestMessenger.text)
-                refreshLatestChatMessenger()
+//                val group = snapshot.getValue(Group::class.java) ?: return
+//                val latestMessenger = group.getLatestMessenger()
+//                latestMessenger.timeStamp = 100
+//                latestMessengerMap[snapshot.key!!] = latestMessenger
+////                println("""""""""""""""""""")
+////                println(latestMessenger.text)
+//                refreshLatestChatMessenger()
+//                latestMessengerMap.keys.remove(snapshot.key!!)
+                activity?.recreate()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
