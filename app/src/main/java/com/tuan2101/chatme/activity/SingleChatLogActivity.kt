@@ -114,6 +114,14 @@ class SingleChatLogActivity : AppCompatActivity() {
             setImage()
         }
 
+        binding.avt.setOnClickListener {
+            navigateToInfoActivity(user)
+        }
+
+        binding.userName.setOnClickListener {
+            navigateToInfoActivity(user)
+        }
+
         binding.chat.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -490,6 +498,12 @@ class SingleChatLogActivity : AppCompatActivity() {
     fun navigateToImageActivity(url: String) {
         val intent = Intent(this@SingleChatLogActivity, ImageActivity::class.java)
         intent.putExtra("image", url)
+        startActivity(intent)
+    }
+
+    fun navigateToInfoActivity(user: User) {
+        val intent = Intent(this@SingleChatLogActivity, InfoActivity::class.java)
+        intent.putExtra("user", user)
         startActivity(intent)
         finish()
     }

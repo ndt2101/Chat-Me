@@ -250,6 +250,12 @@ class GroupChatLogActivity : AppCompatActivity() {
             intent.putExtra("group", group)
             startActivity(intent)
         }
+
+        binding.userName.setOnClickListener {
+            val intent = Intent(this, EditGroupActivity::class.java)
+            intent.putExtra("group", group)
+            startActivity(intent)
+        }
     }
 
     /**
@@ -532,7 +538,6 @@ class GroupChatLogActivity : AppCompatActivity() {
         val intent = Intent(this@GroupChatLogActivity, ImageActivity::class.java)
         intent.putExtra("image", url)
         startActivity(intent)
-        finish()
     }
 }
 

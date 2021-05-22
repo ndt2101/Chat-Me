@@ -54,7 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/app_bar_layout"
         android:layout_margin="20dp"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:scrollbars="vertical">
     </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

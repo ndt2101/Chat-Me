@@ -218,13 +218,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="15dp"
-        android:background="@drawable/text_from_row_style"
+        android:background="@drawable/button_style"
         android:gravity="center"
+        android:textColor="@color/white"
         android:text="Update"
         android:padding="5dp"
         android:textAllCaps="false"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
 
     <Button
         android:id="@+id/logout_button"

@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="30dp"
         tools:context=".activity.InfoActivity">
 
         <!-- TODO: Update blank fragment layout -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cv1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -45,6 +53,9 @@
 
         <TextView
             android:id="@+id/user_name"
+            app:layout_constraintTop_toBottomOf="@id/cv1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User Name"
@@ -53,24 +64,43 @@
             android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1"
-            android:layout_below="@id/cv1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:textAlignment="center"
             >
         </TextView>
 
+        <Button
+            android:id="@+id/send_message"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_name"
+            android:layout_marginTop="15dp"
+            android:drawableStart="@drawable/ic_baseline_chat_24"
+            android:drawableTint="@color/white"
+            android:drawablePadding="5dp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_from_row_style"
+            android:text="send message"
+            android:layout_below="@id/user_name"
+            />
+
+
         <TextView
             android:id="@+id/introduce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stoty"
+            app:layout_constraintTop_toBottomOf="@id/send_message"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Story"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1"
-            android:layout_below="@id/user_name"
             android:layout_marginTop="45dp"
             android:textAlignment="center"
             android:drawableLeft="@drawable/ic_baseline_auto_story"
@@ -83,13 +113,14 @@
             android:id="@+id/work"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/introduce"
+            app:layout_constraintStart_toStartOf="parent"
             android:text="Work"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1"
-            android:layout_below="@id/introduce"
             android:layout_marginTop="20dp"
             android:textAlignment="center"
             android:drawableLeft="@drawable/ic_baseline_work"
@@ -102,13 +133,14 @@
             android:id="@+id/home_town"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/work"
+            app:layout_constraintStart_toStartOf="parent"
             android:text="Home Town"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1"
-            android:layout_below="@id/work"
             android:layout_marginTop="20dp"
             android:textAlignment="center"
             android:drawableLeft="@drawable/ic_baseline_home"
@@ -117,5 +149,8 @@
             >
         </TextView>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
 </layout>

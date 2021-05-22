@@ -1,5 +1,6 @@
 package com.tuan2101.chatme.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
@@ -26,5 +27,26 @@ class InfoActivity : AppCompatActivity() {
             binding.homeTown.text = "From ${user.getHomeTown()}"
         }
 
+        binding.sendMessage.setOnClickListener {
+            val intent = Intent(this@InfoActivity, SingleChatLogActivity::class.java)
+            intent.putExtra("user", user)
+            startActivity(intent)
+            finish()
+        }
+
+        binding.coverImage.setOnClickListener {
+            navigateToImageActivity(user.getCoverImage())
+        }
+
+        binding.avt.setOnClickListener {
+            navigateToImageActivity(user.getAvatar())
+        }
+
+    }
+
+    fun navigateToImageActivity(url: String) {
+        val intent = Intent(this@InfoActivity, ImageActivity::class.java)
+        intent.putExtra("image", url)
+        startActivity(intent)
     }
 }
