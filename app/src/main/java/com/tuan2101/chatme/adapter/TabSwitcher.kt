@@ -50,4 +50,5 @@ class TabSwitcher(fragmentManager: FragmentManager): FragmentPagerAdapter(fragme
             }
         }
     }
+
 }

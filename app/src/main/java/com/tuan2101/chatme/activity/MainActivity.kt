@@ -46,6 +46,12 @@ class MainActivity : AppCompatActivity() {
         binding.mainViewPager.adapter = TabSwitcher(supportFragmentManager)
         binding.tabSwitcher.setupWithViewPager(binding.mainViewPager)
 
+        binding.tabSwitcher.getTabAt(0)?.setIcon(R.drawable.ic_baseline_chat_16)
+        binding.tabSwitcher.getTabAt(1)?.setIcon(R.drawable.group_chat)
+        binding.tabSwitcher.getTabAt(2)?.setIcon(R.drawable.ic_baseline_home_24)
+
+        binding.tabSwitcher.setSelectedTabIndicatorColor(resources.getColor(R.color.catalyst_redbox_background))
+
         if (currentUser?.uid != null) {
 
             referenceUser!!.child("User").child(currentUser!!.uid).addValueEventListener(object :
