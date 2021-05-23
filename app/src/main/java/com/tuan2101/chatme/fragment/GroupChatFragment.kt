@@ -224,8 +224,17 @@ class GroupLatestMessenger(val chatMessenger: GroupChatMessenger) : Item<ViewHol
                         viewHolder.itemView.user_name.text = group.getName()
                         Picasso.get().load(group.getAvt()).into(viewHolder.itemView.avt)
 
-                        viewHolder.itemView.last_messenger.text =
+                        if (group.getLatestMessenger().fromId.equals(FirebaseAuth.getInstance().uid)){
+                            viewHolder.itemView.last_messenger.text =
+                                "You: ${group.getLatestMessenger().text}"
+                        }
+                        else {
+                            viewHolder.itemView.last_messenger.text =
                             "${group.getLatestMessenger().fromName}: ${group.getLatestMessenger().text}"
+                        }
+
+//                        viewHolder.itemView.last_messenger.text =
+//                            "${group.getLatestMessenger().fromName}: ${group.getLatestMessenger().text}"
                     }
                 }
 

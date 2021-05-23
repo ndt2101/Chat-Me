@@ -37,13 +37,14 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/edittext_style"
         android:padding="5dp"
+        android:cropToPadding="true"
         android:src="@drawable/nguyenhuuda"
         app:layout_constraintEnd_toStartOf="@+id/avt_image_to_row"
         app:layout_constraintTop_toTopOf="@+id/avt_image_to_row"
         app:layout_constraintWidth_max="250dp"
         app:layout_constraintHeight_max="250dp"
         android:layout_marginTop="10dp"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/time_of_chat_image_to_row"
