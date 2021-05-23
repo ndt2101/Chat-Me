@@ -211,12 +211,9 @@ class GroupChatLogActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
             val removeCurrentUser = ArrayList<User>()
 
-            println("====================-------------------------------===========================")
-            println("====================-------------------------------===========================")
             println(currentUser.getUid())
             group.getMembers().forEach {
                 if (!it.getUid().equals(currentUser.getUid())) {
-                    println(it.getUid())
                     removeCurrentUser.add(it)
                 }
             }
@@ -282,8 +279,8 @@ class GroupChatLogActivity : AppCompatActivity() {
 
     fun leaveGroup() {
         var targetUser: User
-        var leavedGroupMembers: ArrayList<User> = (_group.getMembers() as ArrayList<User>)
-        loop@for (item in (_group.getMembers() as ArrayList<User>)) {
+        var leavedGroupMembers: ArrayList<User> = (group.getMembers() as ArrayList<User>)
+        loop@for (item in (group.getMembers() as ArrayList<User>)) {
             if (item.getUid().equals(currentUser.getUid())) {
                 targetUser = item
                 leavedGroupMembers.remove(targetUser)
@@ -293,7 +290,7 @@ class GroupChatLogActivity : AppCompatActivity() {
 
         if (FirebaseAuth.getInstance().uid?.equals(_group.getAdminId()) == true) {
             FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId()).child("adminId")
-                .setValue(_group.getMembers()[0].getUid())
+                .setValue(group.getMembers()[1].getUid())
         }
 
         FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId()).child("members")
