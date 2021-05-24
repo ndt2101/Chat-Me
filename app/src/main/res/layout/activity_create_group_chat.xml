@@ -4,6 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,6 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/set_group_avt"
             app:layout_constraintTop_toTopOf="parent"
+            android:maxLines="1"
             />
 
         <TextView
@@ -68,7 +73,6 @@
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="10dp"
             android:drawableTint="@color/violet"
-            android:ellipsize="end"
             android:hint="Search friend here to add..."
             android:maxLines="1"
             android:textColor="@color/black"
@@ -84,9 +88,7 @@
             android:hint="Members"
             android:textSize="18sp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/search_list"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.551"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search" />
 
@@ -95,11 +97,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:layout_marginTop="56dp"
+            android:scrollbars="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/list_members"
-            android:scrollbars="vertical"/>
+            app:layout_constraintTop_toBottomOf="@+id/list_members" />
 
         <Button
             android:id="@+id/create_button"
@@ -109,13 +110,14 @@
             android:background="@drawable/button_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_list"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+    </ScrollView>
 </layout>

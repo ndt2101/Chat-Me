@@ -287,11 +287,6 @@ class SingleChatLogActivity : AppCompatActivity() {
 
         val messenger = binding.chat.text.toString()
 
-        println("==============================================")
-        println(user.getName())
-        println(user.getUid())
-        println("==============================================")
-
 
         if (fromId != null) {
             val chatMessenger = ChatMessenger(
@@ -407,7 +402,6 @@ class SingleChatLogActivity : AppCompatActivity() {
         intent.putExtra("user", user)
         intent.putExtra("type", type)
         startActivity(intent)
-        finish()
     }
 
 
