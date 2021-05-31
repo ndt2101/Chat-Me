@@ -70,11 +70,14 @@ class GroupChatLogActivity : AppCompatActivity() {
     lateinit var group: Group
     var listener: Boolean = false
     lateinit var valueEventListener: ValueEventListener
+    var channelId: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_group_chat_log)
+
+        channelId = System.currentTimeMillis().toInt()
 
         listener = true
 
@@ -580,6 +583,7 @@ class GroupChatLogActivity : AppCompatActivity() {
             data.put("messageContent", messageContent)
             data.put("userName", group.getName())
             data.put("userId", group.getId())
+            data.put("channelId", channelId)
 
             body.put(Constants.REMOTE_MSG_DATA, data)
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)

@@ -69,11 +69,14 @@ class SingleChatLogActivity : AppCompatActivity() {
     lateinit var user: User
     var check = false
     lateinit var childEventListener: ChildEventListener
+    var channelId: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_log)
+
+        channelId = System.currentTimeMillis().toInt()
 
         check = true
 
@@ -510,6 +513,7 @@ class SingleChatLogActivity : AppCompatActivity() {
             data.put("messageContent", messageContent)
             data.put("userName", currentUser.getName())
             data.put("userId", currentUser.getUid())
+            data.put("channelId", channelId)
 
             body.put(Constants.REMOTE_MSG_DATA, data)
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)

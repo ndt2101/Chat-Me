@@ -119,7 +119,7 @@ class MessagingService: FirebaseMessagingService() {
 
                                     val managerCompat =
                                         NotificationManagerCompat.from(applicationContext)
-                                    managerCompat.notify(1, buider.build())
+                                    managerCompat.notify(remoteMessage.data["channelId"]!!.toInt(), buider.build())
                                 }
                             }
 
@@ -178,7 +178,7 @@ class MessagingService: FirebaseMessagingService() {
                                     }
 
                                     val managerCompat = NotificationManagerCompat.from(applicationContext)
-                                    managerCompat.notify(1, buider.build())
+                                    managerCompat.notify(remoteMessage.data["channelId"]!!.toInt(), buider.build())
                                 }
                             }
 
