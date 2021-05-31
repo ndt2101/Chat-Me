@@ -25,6 +25,7 @@ class GroupChatFragment : Fragment() {
     lateinit var binding: FragmentGroupChatBinding
     val adapter = GroupAdapter<ViewHolder>()
     val latestMessengerMap = LinkedHashMap<String, GroupChatMessenger>()
+    var color: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -38,9 +39,7 @@ class GroupChatFragment : Fragment() {
 
         listenForLatestMessenger()
 
-        println("==================================================================")
-        println("chay ra ngoai")
-        println("==================================================================")
+        color = requireContext().resources.getColor(R.color.black)
 
         adapter.setOnItemClickListener { item, view ->
 
@@ -51,6 +50,10 @@ class GroupChatFragment : Fragment() {
             var chatMessenger = latestMessenger.chatMessenger
 
             var groupId = chatMessenger.toId
+
+            item.chatMessenger.status = "seen"
+
+            view.last_messenger.setTextColor(requireContext().resources.getColor(R.color.seen_color))
 
             FirebaseDatabase.getInstance().getReference("Groups").child(groupId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -148,7 +151,7 @@ class GroupChatFragment : Fragment() {
         }
 
         for (i in list.indices) {
-            adapter.add(GroupLatestMessenger(list[i]))
+            adapter.add(GroupLatestMessenger(list[i], color))
         }
     }
 
@@ -162,10 +165,6 @@ class GroupChatFragment : Fragment() {
                 val group = snapshot.getValue(Group::class.java) ?: return
                 val latestMessenger = group.getLatestMessenger()
                 latestMessengerMap[snapshot.key!!] = latestMessenger
-
-//                println("""""""""""""""""""")
-//                println(latestMessenger.text)
-
                 refreshLatestChatMessenger()
             }
 
@@ -173,20 +172,10 @@ class GroupChatFragment : Fragment() {
                 val group = snapshot.getValue(Group::class.java) ?: return
                 val latestMessenger = group.getLatestMessenger()
                 latestMessengerMap[snapshot.key!!] = latestMessenger
-//                println("""""""""""""""""""")
-//                println(latestMessenger.text)
                 refreshLatestChatMessenger()
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-//                val group = snapshot.getValue(Group::class.java) ?: return
-//                val latestMessenger = group.getLatestMessenger()
-//                latestMessenger.timeStamp = 100
-//                latestMessengerMap[snapshot.key!!] = latestMessenger
-////                println("""""""""""""""""""")
-////                println(latestMessenger.text)
-//                refreshLatestChatMessenger()
-//                latestMessengerMap.keys.remove(snapshot.key!!)
                 activity?.recreate()
             }
 
@@ -205,7 +194,7 @@ class GroupChatFragment : Fragment() {
 }
 
 
-class GroupLatestMessenger(val chatMessenger: GroupChatMessenger) : Item<ViewHolder>() {
+class GroupLatestMessenger(val chatMessenger: GroupChatMessenger, val color: Int) : Item<ViewHolder>() {
 
     lateinit var group: Group
 
@@ -213,6 +202,10 @@ class GroupLatestMessenger(val chatMessenger: GroupChatMessenger) : Item<ViewHol
 
         var fromName: String
 
+
+        if (chatMessenger.status.equals("")) {
+            viewHolder.itemView.last_messenger.setTextColor(color)
+        }
 
         FirebaseDatabase.getInstance().getReference("Groups").child(chatMessenger.toId)
             .addValueEventListener(object : ValueEventListener {
@@ -231,9 +224,6 @@ class GroupLatestMessenger(val chatMessenger: GroupChatMessenger) : Item<ViewHol
                             viewHolder.itemView.last_messenger.text =
                             "${group.getLatestMessenger().fromName}: ${group.getLatestMessenger().text}"
                         }
-
-//                        viewHolder.itemView.last_messenger.text =
-//                            "${group.getLatestMessenger().fromName}: ${group.getLatestMessenger().text}"
                     }
                 }
 

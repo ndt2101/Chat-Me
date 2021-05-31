@@ -69,6 +69,7 @@ class ChatFragment : Fragment() {
 
             (item as LatestMessenger).chatMessenger.status = "seen"
 
+
             var latestMessenger: LatestMessenger = item as LatestMessenger
 
             var chatMessenger = latestMessenger.chatMessenger

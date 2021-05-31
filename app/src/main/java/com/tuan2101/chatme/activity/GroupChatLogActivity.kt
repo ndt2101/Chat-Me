@@ -71,6 +71,8 @@ class GroupChatLogActivity : AppCompatActivity() {
     var listener: Boolean = false
     lateinit var valueEventListener: ValueEventListener
     var channelId: Int = 0
+    lateinit var checkOnDataChangeListener: ValueEventListener
+    lateinit var checkLatestGroupChatMessageReference: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +86,6 @@ class GroupChatLogActivity : AppCompatActivity() {
         EmojiManager.install(IosEmojiProvider())
 
         _group = intent.getSerializableExtra("group") as Group
-
 
 
         FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId())
@@ -275,6 +276,15 @@ class GroupChatLogActivity : AppCompatActivity() {
             }
             popupMenu.show()
         }
+
+        val currentUserId = FirebaseAuth.getInstance().uid
+        checkLatestGroupChatMessageReference = FirebaseDatabase.getInstance().reference
+            .child("/User_Groups/$currentUserId/${_group.getId()}/latestMessenger")
+
+        initCheckOnDataChangeListener(checkLatestGroupChatMessageReference)
+
+        checkLatestGroupChatMessageReference.addValueEventListener(checkOnDataChangeListener)
+
     }
 
     fun leaveGroup() {
@@ -296,6 +306,27 @@ class GroupChatLogActivity : AppCompatActivity() {
         FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId()).child("members")
             .setValue(leavedGroupMembers)
     }
+
+
+    fun initCheckOnDataChangeListener(reference: DatabaseReference) {
+        checkOnDataChangeListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    var latestGroupChatMessage = snapshot.getValue(GroupChatMessenger::class.java)
+
+                    if (latestGroupChatMessage?.status?.equals("") == true) {
+                        reference.child("status").setValue("seen")
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        }
+    }
+
 
     fun initValueListener(reference: DatabaseReference) {
         valueEventListener = object : ValueEventListener {
@@ -357,8 +388,6 @@ class GroupChatLogActivity : AppCompatActivity() {
         reference.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val chatMessenger = snapshot.getValue(GroupChatMessenger::class.java)
-
-
 
                 if (chatMessenger != null) {
 
@@ -427,7 +456,8 @@ class GroupChatLogActivity : AppCompatActivity() {
                 currentUser.getName(),
                 "text",
                 "",
-                currentUser.getAvatar()
+                currentUser.getAvatar(),
+                ""
             )
             reference.setValue(chatMessenger)
                 .addOnSuccessListener {
@@ -500,7 +530,8 @@ class GroupChatLogActivity : AppCompatActivity() {
                             currentUser.getName(),
                             "image",
                             url,
-                            currentUser.getAvatar()
+                            currentUser.getAvatar(),
+                            ""
                         )
 
                         reference.setValue(chatMessenger)
@@ -629,6 +660,7 @@ class GroupChatLogActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         listener = false
+        checkLatestGroupChatMessageReference.removeEventListener(checkOnDataChangeListener)
     }
 }
 

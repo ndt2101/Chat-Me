@@ -206,7 +206,8 @@ class CreateGroupChatActivity : AppCompatActivity() {
                         groupName,
                         "text",
                         "",
-                        url
+                        url,
+                        ""
                 ),
                 currentUser.getUid()
             )
