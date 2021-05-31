@@ -1,7 +1,6 @@
 package com.tuan2101.chatme.fragment
 
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,7 +14,7 @@ import com.tuan2101.chatme.R
 import com.tuan2101.chatme.activity.*
 import com.tuan2101.chatme.databinding.FragmentGroupChatBinding
 import com.tuan2101.chatme.viewModel.Group
-import com.tuan2101.chatme.viewModel.User
+import com.tuan2101.chatme.viewModel.GroupChatMessenger
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder

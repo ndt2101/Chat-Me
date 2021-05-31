@@ -1,8 +1,6 @@
 package com.tuan2101.chatme.activity
 
 import android.app.Activity
-import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -29,6 +27,7 @@ import com.tuan2101.chatme.R
 import com.tuan2101.chatme.databinding.ActivityChatLogBinding
 import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.network.ApiService
+import com.tuan2101.chatme.viewModel.ChatMessenger
 import com.tuan2101.chatme.viewModel.Constants
 import com.tuan2101.chatme.viewModel.User
 import com.vanniktech.emoji.EmojiManager
@@ -68,11 +67,15 @@ class SingleChatLogActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityChatLogBinding
     lateinit var user: User
+    var check = false
+    lateinit var childEventListener: ChildEventListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_log)
+
+        check = true
 
         EmojiManager.install(IosEmojiProvider())
 
@@ -172,11 +175,6 @@ class SingleChatLogActivity : AppCompatActivity() {
             loadTextMessenger()
             binding.chat.setText("")
 
-//            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//            imm.hideSoftInputFromWindow(binding.chat.getWindowToken(), 0)
-//            val inputMethodManager = applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//            inputMethodManager.toggleSoftInput(SHOW_FORCED, HIDE_IMPLICIT_ONLY)
-
         }
 
         binding.chat.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
@@ -220,24 +218,26 @@ class SingleChatLogActivity : AppCompatActivity() {
             }
     }
 
-
-    /**
-     * ham lay toan bo tin nhan hien co tren firebase de load vao recyclerView theo uid de quyet dinh load item nao
-     */
-    private fun listenForMessenger() {
-
-        val toId = user.getUid()
-        val fromId = FirebaseAuth.getInstance().uid
-
-        val reference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId")
-        reference.addChildEventListener(object : ChildEventListener {
+    fun initChildListener(reference: DatabaseReference, latestMessengerReference: DatabaseReference) {
+        childEventListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
+                if (!check) {
+                    reference.removeEventListener(this)
+                }
+
                 val chatMessenger = snapshot.getValue(ChatMessenger::class.java)
+
+                if (chatMessenger?.status.equals("")) {
+                    latestMessengerReference.child("status").setValue("seen")
+                    if (chatMessenger != null) {
+                        reference.child(chatMessenger.id).child("status").setValue("seen")
+                    }
+                }
 
                 if (chatMessenger != null && chatMessenger.type.equals("text")) {
                     if (chatMessenger.fromId == FirebaseAuth.getInstance().uid) {
                         adapter.add(ChatTextToItem(chatMessenger, currentUser))
-
                     } else {
                         adapter.add(ChatTextFromItem(chatMessenger, user))
                     }
@@ -267,8 +267,27 @@ class SingleChatLogActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
 
             }
+        }
+    }
 
-        })
+
+    /**
+     * ham lay toan bo tin nhan hien co tren firebase de load vao recyclerView theo uid de quyet dinh load item nao
+     */
+    private fun listenForMessenger() {
+
+        val toId = user.getUid()
+        val fromId = FirebaseAuth.getInstance().uid
+
+        val reference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId")
+        val latestMessengerReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$fromId/$toId")
+        initChildListener(reference, latestMessengerReference)
+
+       if (check) {
+           reference.addChildEventListener(childEventListener)
+       } else {
+            reference.removeEventListener(childEventListener)
+       }
     }
 
     /**
@@ -283,7 +302,7 @@ class SingleChatLogActivity : AppCompatActivity() {
 
         val toReference = FirebaseDatabase.getInstance().getReference("/user_messengers/$toId/$fromId").push()
 
-
+        val updateReference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId")
 
         val messenger = binding.chat.text.toString()
 
@@ -297,11 +316,13 @@ class SingleChatLogActivity : AppCompatActivity() {
                 System.currentTimeMillis() / 1000,
                 currentUser.getName(),
                 "text",
+                "",
                 ""
             )
             reference.setValue(chatMessenger)
                 .addOnSuccessListener {
                     binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
+                    updateReference.child(chatMessenger.id).child("status").setValue("sent")
                 }
 
             toReference.setValue(chatMessenger)
@@ -310,6 +331,7 @@ class SingleChatLogActivity : AppCompatActivity() {
                 }
             val latestMessengerReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$fromId/$toId")
             latestMessengerReference.setValue(chatMessenger)
+            latestMessengerReference.child("status").setValue("seen")
 
             val latestMessengerToReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$toId/$fromId")
             latestMessengerToReference.setValue(chatMessenger)
@@ -331,6 +353,8 @@ class SingleChatLogActivity : AppCompatActivity() {
         val reference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId").push()
 
         val toReference = FirebaseDatabase.getInstance().getReference("/user_messengers/$toId/$fromId").push()
+
+        val updateReference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId")
 
 
         if (fromId != null) {
@@ -364,12 +388,14 @@ class SingleChatLogActivity : AppCompatActivity() {
                             System.currentTimeMillis() / 1000,
                             currentUser.getName(),
                             "image",
-                            url
+                            url,
+                            ""
                         )
 
                         reference.setValue(chatMessenger)
                             .addOnSuccessListener {
                                 binding.listMessenger.scrollToPosition(adapter.itemCount - 1)
+                                updateReference.child(chatMessenger.id).child("status").setValue("sent")
                             }
 
                         toReference.setValue(chatMessenger)
@@ -378,6 +404,7 @@ class SingleChatLogActivity : AppCompatActivity() {
                             }
                         val latestMessengerReference = FirebaseDatabase.getInstance().getReference("latest-messenger/$fromId/$toId")
                         latestMessengerReference.setValue(chatMessenger)
+                        latestMessengerReference.child("status").setValue("seen")
 
                         val latestMessengerToReference = FirebaseDatabase.getInstance().getReference(
                             "latest-messenger/$toId/$fromId"
@@ -542,6 +569,16 @@ class SingleChatLogActivity : AppCompatActivity() {
         intent.putExtra("user", user)
         startActivity(intent)
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        check = false
+
+        val toId = user.getUid()
+        val fromId = FirebaseAuth.getInstance().uid
+        val reference = FirebaseDatabase.getInstance().getReference("/user_messengers/$fromId/$toId")
+        reference.removeEventListener(childEventListener)
     }
 
 }

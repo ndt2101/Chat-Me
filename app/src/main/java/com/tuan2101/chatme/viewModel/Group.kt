@@ -1,7 +1,5 @@
 package com.tuan2101.chatme.viewModel
 
-import com.tuan2101.chatme.activity.ChatMessenger
-import com.tuan2101.chatme.activity.GroupChatMessenger
 import java.io.Serializable
 
 class Group(private var name: String,

@@ -1,6 +1,8 @@
 package com.tuan2101.chatme.activity
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -50,7 +53,26 @@ class MainActivity : AppCompatActivity() {
         binding.tabSwitcher.getTabAt(1)?.setIcon(R.drawable.group_chat)
         binding.tabSwitcher.getTabAt(2)?.setIcon(R.drawable.ic_baseline_home_24)
 
-        binding.tabSwitcher.setSelectedTabIndicatorColor(resources.getColor(R.color.catalyst_redbox_background))
+        binding.tabSwitcher.getTabAt(0)?.icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
+        binding.tabSwitcher.getTabAt(1)?.icon?.setColorFilter(resources.getColor(R.color.gray), PorterDuff.Mode.SRC_IN)
+        binding.tabSwitcher.getTabAt(2)?.icon?.setColorFilter(resources.getColor(R.color.gray), PorterDuff.Mode.SRC_IN)
+
+        binding.tabSwitcher.setTabTextColors(resources.getColor(R.color.gray), resources.getColor(R.color.white))
+
+        binding.tabSwitcher.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                tab?.icon?.setColorFilter(resources.getColor(R.color.gray), PorterDuff.Mode.SRC_IN)
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+        })
 
         if (currentUser?.uid != null) {
 

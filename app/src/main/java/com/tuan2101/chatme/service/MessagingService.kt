@@ -18,6 +18,7 @@ import com.tuan2101.chatme.R
 import com.tuan2101.chatme.activity.*
 import com.tuan2101.chatme.viewModel.Constants
 import com.tuan2101.chatme.viewModel.Group
+import com.tuan2101.chatme.viewModel.GroupChatMessenger
 import com.tuan2101.chatme.viewModel.User
 
 class MessagingService: FirebaseMessagingService() {

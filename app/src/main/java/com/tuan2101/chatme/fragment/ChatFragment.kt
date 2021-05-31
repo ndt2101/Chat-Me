@@ -1,16 +1,12 @@
 package com.tuan2101.chatme.fragment
 
-import android.app.Application
-import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -23,14 +19,12 @@ import com.tuan2101.chatme.activity.SingleChatLogActivity
 import com.tuan2101.chatme.R
 
 import com.tuan2101.chatme.databinding.FragmentChatBinding
-import com.tuan2101.chatme.activity.ChatMessenger
+import com.tuan2101.chatme.viewModel.ChatMessenger
 import com.tuan2101.chatme.viewModel.User
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.chat_view_holder.view.*
-import java.lang.reflect.Field
-import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
@@ -41,11 +35,15 @@ class ChatFragment : Fragment() {
     lateinit var binding: FragmentChatBinding
     val adapter = GroupAdapter<ViewHolder>()
     var latestMessengerMap = LinkedHashMap<String, ChatMessenger>()
+    var resColor: Int = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
 
         listenForLatestMessenger()
+
+        resColor = requireContext().resources.getColor(R.color.black)
 
 
         /**
@@ -63,13 +61,13 @@ class ChatFragment : Fragment() {
             }
         }
 
-//        println("==================================================================")
-//        println("chay ra ngoai")
-//        println("==================================================================")
-
         adapter.setOnItemClickListener { item, view ->
 
             var user: User
+
+            view.last_messenger.setTextColor(resources.getColor(R.color.seen_color))
+
+            (item as LatestMessenger).chatMessenger.status = "seen"
 
             var latestMessenger: LatestMessenger = item as LatestMessenger
 
@@ -111,9 +109,6 @@ class ChatFragment : Fragment() {
     /**
      * merge sort
      */
-
-
-
     fun mergeSort(list: List<ChatMessenger>): List<ChatMessenger> {
         if (list.size <= 1) {
             return list
@@ -162,7 +157,7 @@ class ChatFragment : Fragment() {
         adapter.clear()
         var list = mergeSort(latestMessengerMap.values.toList())
         for (element in list) {
-            adapter.add(LatestMessenger(element))
+            adapter.add(LatestMessenger(element, resColor))
         }
     }
 
@@ -197,15 +192,11 @@ class ChatFragment : Fragment() {
             }
 
         })
-
-//        println("==================================================================")
-//        println("chay vao day")
-//        println("==================================================================")
     }
 
 }
 
-class LatestMessenger(val chatMessenger: ChatMessenger) : Item<ViewHolder>() {
+class LatestMessenger(val chatMessenger: ChatMessenger, val color: Int) : Item<ViewHolder>() {
 
     lateinit var user: User
 
@@ -245,6 +236,11 @@ class LatestMessenger(val chatMessenger: ChatMessenger) : Item<ViewHolder>() {
                             chatToUserId = chatMessenger.fromId
                             fromName = chatMessenger.fromName
                         }
+
+                        if (chatMessenger.status.equals("")) {
+                            viewHolder.itemView.last_messenger.setTextColor(color)
+                        }
+
                         viewHolder.itemView.last_messenger.text = "$fromName: ${chatMessenger.text}"
                     }
                 }
@@ -254,9 +250,7 @@ class LatestMessenger(val chatMessenger: ChatMessenger) : Item<ViewHolder>() {
                 }
 
             })
-
     }
-
 
     override fun getLayout(): Int {
         return R.layout.chat_view_holder

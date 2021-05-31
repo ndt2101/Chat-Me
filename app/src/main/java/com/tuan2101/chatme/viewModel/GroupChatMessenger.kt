@@ -1,4 +1,4 @@
-package com.tuan2101.chatme.activity
+package com.tuan2101.chatme.viewModel
 
 import com.tuan2101.chatme.viewModel.Group
 import com.tuan2101.chatme.viewModel.User

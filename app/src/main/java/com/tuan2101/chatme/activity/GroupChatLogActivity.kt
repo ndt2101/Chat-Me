@@ -2,7 +2,6 @@ package com.tuan2101.chatme.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -17,9 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
@@ -27,12 +24,12 @@ import com.google.firebase.storage.UploadTask
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.tuan2101.chatme.R
-import com.tuan2101.chatme.databinding.ActivityChatLogBinding
 import com.tuan2101.chatme.databinding.ActivityGroupChatLogBinding
 import com.tuan2101.chatme.network.ApiClient
 import com.tuan2101.chatme.network.ApiService
 import com.tuan2101.chatme.viewModel.Constants
 import com.tuan2101.chatme.viewModel.Group
+import com.tuan2101.chatme.viewModel.GroupChatMessenger
 import com.tuan2101.chatme.viewModel.User
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
@@ -122,7 +119,7 @@ class GroupChatLogActivity : AppCompatActivity() {
         val reference = FirebaseDatabase.getInstance().getReference("Groups").child(_group.getId())
             if (listener){
 
-                initValueListenter(reference)
+                initValueListener(reference)
                 reference
                     .addValueEventListener(valueEventListener)
             } else {
@@ -297,7 +294,7 @@ class GroupChatLogActivity : AppCompatActivity() {
             .setValue(leavedGroupMembers)
     }
 
-    fun initValueListenter(reference: DatabaseReference) {
+    fun initValueListener(reference: DatabaseReference) {
         valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {

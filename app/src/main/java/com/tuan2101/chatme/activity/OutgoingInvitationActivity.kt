@@ -55,19 +55,6 @@ import kotlin.collections.ArrayList
 
         check = true
 
-
-//        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener ( object: OnCompleteListener<InstanceIdResult> {
-//            override fun onComplete(task: Task<InstanceIdResult>) {
-//                if (task.isSuccessful && task != null) {
-//                    inviterToken = task.result!!.token
-//                }
-//            }
-//
-//        })
-
-
-
-
         user = intent.getSerializableExtra("user") as User?
 
         _type = intent.getStringExtra("type")!!
