@@ -144,7 +144,7 @@ class SingleChatLogActivity : AppCompatActivity() {
                 if (it.itemId.equals(R.id.profile)) {
                     navigateToInfoActivity(user)
                 } else if (it.itemId.equals(R.id.delete)) {
-                    Toast.makeText(applicationContext, "xoa", Toast.LENGTH_SHORT).show()
+                    removeConversation()
                 }
                 true
             }

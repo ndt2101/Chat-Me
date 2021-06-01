@@ -178,7 +178,7 @@ class CreateGroupChatActivity : AppCompatActivity() {
     fun navigateToGroupChatLogActivity() {
         if (group != null){
             val intent = Intent(this@CreateGroupChatActivity, GroupChatLogActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("group", group)
             startActivity(intent)
             finish()
@@ -218,14 +218,6 @@ class CreateGroupChatActivity : AppCompatActivity() {
                 }
 
 
-            /**
-             * them truong groups cho tung user co trong group
-             */
-
-
-            /**
-             * can xem lai phan nay
-             */
 
             group!!.getMembers().forEach {
                     userReference = FirebaseDatabase.getInstance().reference.child("User_Groups")
