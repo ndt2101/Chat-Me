@@ -86,6 +86,10 @@ class IncomingInvitationActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        Toast.makeText(applicationContext, "Can't back", Toast.LENGTH_SHORT).show()
+    }
+
     fun sendRemoteMessage(remoteMessage: String, type: String) {
         ApiClient.getClient().create(ApiService::class.java).sendRemoteMessage(
             Constants.getRemoteMessageHeaders(), remoteMessage

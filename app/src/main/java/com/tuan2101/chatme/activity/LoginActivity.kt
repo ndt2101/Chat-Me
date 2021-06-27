@@ -28,7 +28,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
         binding.createAccount.setOnClickListener(this)
@@ -85,18 +84,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         var loginEmail = binding.loginEmail.text.toString()
         val loginPassword = binding.loginPassword.text.toString()
 
-        println("///////////////////////////////////////////////////////////////")
-        println(loginEmail)
-        println(loginPassword)
-        println("***************************************************************")
-
         progressDialog = ProgressDialog(this)
-
         progressDialog.setTitle("Loading")
         progressDialog.setMessage("Account is signing...")
         progressDialog.setCanceledOnTouchOutside(true)
         progressDialog.show()
-
 
         if (loginEmail.isEmpty()) {
             Toast.makeText(this@LoginActivity, "Email can't be empty", Toast.LENGTH_SHORT).show()

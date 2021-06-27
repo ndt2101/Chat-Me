@@ -175,6 +175,11 @@ import kotlin.collections.ArrayList
         }
     }
 
+
+     override fun onBackPressed() {
+         Toast.makeText(this@OutgoingInvitationActivity, "Can't back", Toast.LENGTH_SHORT).show()
+     }
+
     fun sendRemoteMessage(remoteMessage: String, type: String) {
         call = ApiClient.getClient().create(ApiService::class.java).sendRemoteMessage(
             Constants.getRemoteMessageHeaders(), remoteMessage

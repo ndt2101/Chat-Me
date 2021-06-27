@@ -186,12 +186,6 @@ class DrawingView(
             Bitmap.Config.ARGB_8888
         )
         mBuffer = Canvas(mBitmap)
-
-//        Toast.makeText(
-//            context,
-//            "\"onSizeChanged: created bitmap/buffer of ${mBitmap.width} x ${mBitmap.height}",
-//            Toast.LENGTH_SHORT
-//        ).show()
     }
 
     override fun onDraw(canvas: Canvas?) {

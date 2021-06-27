@@ -20,7 +20,6 @@ import java.security.acl.Group
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
     lateinit var firebaseAuth: FirebaseAuth
-    lateinit var progressDialog: ProgressDialog
     lateinit var databaseReference: DatabaseReference
     private lateinit var binding: ActivityRegisterBinding
 
@@ -48,7 +47,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    // :))))))
     fun navigateToMainActivity() {
         val intent = Intent(this@RegisterActivity, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -66,22 +64,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     private fun createNewAccount() {
         var email = binding.registerEmail.text.toString()
         var password = binding.registerPassword.text.toString()
-
-//        progressDialog = ProgressDialog(this)
-//        progressDialog.setTitle("Loading")
-//        progressDialog.setMessage("Account is creating...")
-//        progressDialog.setCanceledOnTouchOutside(true)
-//        progressDialog.show()
-
         if (email.isEmpty())
         {
             Toast.makeText(this@RegisterActivity,"Email cannot be empty",Toast.LENGTH_SHORT).show()
-//            progressDialog.dismiss()
         }
         else if (password.isEmpty())
         {
             Toast.makeText(this@RegisterActivity,"Password cannot be empty",Toast.LENGTH_SHORT).show()
-//            progressDialog.dismiss()
         }
         else {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -89,14 +78,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         override fun onComplete(p0: Task<AuthResult>) {
                             if(p0.isSuccessful) {
                                 var currentUId = firebaseAuth.currentUser.uid
-//                                databaseReference.child("User").child(currentUId).child("name").setValue(binding.registerUserName.text)
-//                                databaseReference.child("User").child(currentUId).child("uid").setValue(currentUId)
-//                                databaseReference.child("User").child(currentUId).child("status").setValue("off")
-//                                databaseReference.child("User").child(currentUId).child("avatar").setValue("")
-//                                databaseReference.child("User").child(currentUId).child("search").setValue(binding.registerUserName.text.toString().toLowerCase())
-
-
                                 val detailsUser = HashMap<String, Any>()
+
                                 detailsUser["name"] = binding.registerUserName.text.toString()
                                 detailsUser["uid"] = currentUId
                                 detailsUser["status"] = "offline"
@@ -114,13 +97,11 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                         if (task.isSuccessful) {
                                             navigateToMainActivity()
                                             Toast.makeText(this@RegisterActivity, " Account create successfully", Toast.LENGTH_SHORT).show()
-//                                            progressDialog.dismiss()
                                         }
                                     }
                             }
                             else {
                                 Toast.makeText(this@RegisterActivity,"Error: " + p0.exception?.message.toString(), Toast.LENGTH_SHORT).show()
-//                                progressDialog.dismiss()
                             }
                         }
 
